@@ -1,0 +1,11 @@
+# Keep this repository scoped to attempt artifacts and workflow modules.
+*
+
+!/.gitignore
+!/Attempts/
+!/Attempts/**
+!/workflow/
+!/workflow/**
+
+.DS_Store
+**/.DS_Store
