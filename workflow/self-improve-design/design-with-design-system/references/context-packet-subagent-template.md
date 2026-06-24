@@ -12,7 +12,7 @@ The main agent records the subagent run id or handle in the completion report. T
 
 The Context Packet subagent is always read-only during Phase 1. It must not edit, create, delete, move, rename, or write files, even when durable output is requested.
 
-The subagent must not propose page design, layout composition, visual styling, copy, implementation steps, component arrangements, or formal design-system edits. It may only report evidence-bound constraints, retrieval findings, missing evidence, and open gaps.
+The subagent must not propose page design, layout composition, visual styling, copy, implementation steps, component arrangements, or formal design-system edits. It may only report evidence-bound constraints, retrieval findings, alignment inputs, missing evidence, and open gaps.
 
 This template may be used for read-only dry-run verification only when the dry run is executed through a real subagent or delegation tool.
 
@@ -21,6 +21,8 @@ This template may be used for read-only dry-run verification only when the dry r
 You are the Context Packet subagent for `design-with-design-system`.
 
 Your job is to translate the user's page or UI intent into compact, evidence-bounded design context. Search broadly enough to avoid missing relevant design-system evidence, then return only the evidence and constraints that directly affect the current design task.
+
+Also return evidence-bounded inputs for the main agent's Phase 2 Designer Alignment Gate. These inputs help the main agent ask the designer about page direction, semantic decisions, important token or component choices, and unresolved execution uncertainties before any design or implementation begins.
 
 ## Inputs To Provide
 
@@ -119,6 +121,50 @@ For normal Phase 1 production calls, return only this structure:
 - relevant components or patterns:
 - token categories:
 - interaction and state expectations:
+
+### Alignment Inputs For Designer Gate
+- Gate 1 page direction:
+  - page purpose cues:
+  - nearest archetype cues:
+  - primary user task cues:
+  - information hierarchy cues:
+  - design stance cues:
+  - explicit exclusions:
+  - direction-level questions:
+- Gate 2 semantic decisions:
+  - layout density:
+    - default from evidence:
+    - evidence status: confirmed / generic / candidate / open gap / missing
+    - question, if any:
+  - visual hierarchy:
+    - default from evidence:
+    - evidence status: confirmed / generic / candidate / open gap / missing
+    - question, if any:
+  - component reuse posture:
+    - default from evidence:
+    - evidence status: confirmed / generic / candidate / open gap / missing
+    - question, if any:
+  - content density / narrative rhythm:
+    - default from evidence:
+    - evidence status: confirmed / generic / candidate / open gap / missing
+    - question, if any:
+  - emphasis strategy:
+    - default from evidence:
+    - evidence status: confirmed / generic / candidate / open gap / missing
+    - question, if any:
+  - interaction depth:
+    - default from evidence:
+    - evidence status: confirmed / generic / candidate / open gap / missing
+    - question, if any:
+- Gate 3 execution contract:
+  - important token categories or confirmed token names:
+  - component decisions needing confirmation:
+  - token gaps:
+  - component gaps:
+  - variant uncertainties:
+  - possible local components or page-local exceptions:
+  - conflicts with confirmed rules:
+  - routine implementation tokens omitted unless design-relevant:
 
 ### Evidence Ledger
 | Source | Why loaded | Confidence | Status |

@@ -22,7 +22,7 @@ This Skill builds context progressively instead of reading the whole design syst
 - Human product intent is the starting point.
 - Phase 1 uses a real Context Packet subagent to compress relevant design-system evidence.
 - Phase 2 reads the Context Packet, `workflow/design-system/token.json`, related code, and implementation precedent before creating anything.
-- Phase 2 must pass the Designer Alignment Gate before the first design proposal, prototype, or implementation.
+- Phase 2 must pass the three-gate Designer Alignment Gate before the first design proposal, prototype, or implementation.
 - Phase 3 uses designer feedback to fix the current surface, then calls `../rule-update/` after the surface is complete.
 - Throughout the workflow, use page intent and evidence limits to narrow context instead of broad design-system reads.
 
@@ -49,6 +49,8 @@ Before designing or implementing a new page or UI surface, route the request thr
 
 The subagent should collect and compress only the design-system evidence needed for the current page intent. It should separate confirmed rules, generic rules, candidate patterns, code evidence, missing evidence, and open gaps before design work begins.
 
+The subagent should also return evidence-bounded alignment inputs for Phase 2: page-direction cues, semantic decision cues, important token or component constraints, and token or component uncertainties that need designer discussion.
+
 Use the Phase 1 calling template:
 
 - `references/context-packet-subagent-template.md`
@@ -59,7 +61,7 @@ Do not simulate a Context Packet inside the main agent response.
 
 ### Phase 1 Completion
 
-Phase 1 is complete only after the Context Packet has been produced and the open gaps and evidence limits have been listed.
+Phase 1 is complete only after the Context Packet has been produced and the open gaps, evidence limits, and Phase 2 alignment inputs have been listed.
 
 For completed or blocked Phase 1 runs, generate a structured report by using and citing this template:
 
@@ -76,6 +78,7 @@ Phase 2 is owned by the main agent. Do not require a second subagent workflow fo
 Before designing or implementing, read:
 
 - the Context Packet from Phase 1;
+- the alignment inputs from the Context Packet;
 - `workflow/design-system/token.json` as the implementation token contract;
 - existing code related to the target route, page, screen, section, component, or styling pattern;
 - available component usage examples and implementation patterns.
@@ -86,15 +89,89 @@ When Phase 2 includes creating an initial design proposal, prototype, or impleme
 
 After reading the Context Packet, `workflow/design-system/token.json`, relevant code, and implementation precedent, stop before creating any design proposal, prototype, or implementation. Even if the main agent believes the request is clear, the designer must control whether work continues.
 
+Use the three gates below to move from broad intent to executable constraints. Do not collapse the gates into one generic approval unless the designer has already given explicit answers that cover all three layers.
+
+#### Gate 1: Page Direction
+
+Gate 1 determines what the page or UI surface is trying to become. Keep it at the page, user-task, and information-architecture level. Do not ask about token names, detailed component props, or pixel-level styling in Gate 1.
+
 Present only:
 
 - `current design judgment:`
 - `rules to apply:`
 - `questions for the designer:`
 
-In `rules to apply`, include explicit designer answers or approvals carried forward by the Context Packet, even when the original source was a candidate, gap, or question-answer file.
+In `current design judgment`, include only direction-level claims:
 
-Continue the alignment conversation until the designer explicitly approves moving into the first version, prototype, or implementation. If the designer corrects or redirects the plan, update the judgment, rules, and questions before continuing.
+- page purpose;
+- nearest page, screen, or section archetype;
+- primary user task;
+- information hierarchy;
+- desired design stance;
+- explicit exclusions or things not to explore.
+
+In `rules to apply`, include confirmed rules, relevant generic rules, existing page or component precedent, and explicit designer answers or approvals carried forward by the Context Packet, even when the original source was a candidate, gap, or question-answer file.
+
+In `questions for the designer`, ask only direction-level questions that affect the page purpose, archetype, hierarchy, stance, or exclusions.
+
+#### Gate 2: Semantic Decisions
+
+Start Gate 2 only after the designer approves or corrects Gate 1.
+
+Gate 2 translates design intent into semantic design decisions before implementation details. These decisions are controls for the current surface, not design-system updates by themselves.
+
+Use only the semantic decision items that matter for the current task:
+
+- layout density: compact / balanced / spacious;
+- visual hierarchy: strong hero / section-led / content-first / task-first;
+- component reuse posture: strict reuse / reuse with local composition / local component allowed;
+- content density / narrative rhythm: concise / descriptive / editorial;
+- emphasis strategy: type / spacing / contrast / imagery / motion;
+- interaction depth: static / hover states / rich states / multi-state flow.
+
+For each relevant semantic decision, present:
+
+- `decision:`
+- `default from evidence:`
+- `designer choice:`
+- `evidence status:` confirmed / generic / candidate / open gap / missing
+- `implementation implication:`
+
+Do not invent semantic controls that are not needed for the current surface. Do not treat candidate patterns or agent inferences as confirmed designer choices.
+
+#### Gate 3: Execution Contract
+
+Start Gate 3 only after the designer approves or corrects Gate 2.
+
+Gate 3 turns the approved direction and semantic decisions into an implementation contract. It should be concise. Do not list every routine token, every style value, or every component import.
+
+Present only:
+
+- `important tokens:`
+- `component decisions:`
+- `uncertainty queue:`
+- `routine implementation tokens:`
+
+In `important tokens`, list only token categories or token names that affect page direction, hierarchy, density, brand feel, interaction semantics, or a known design-system constraint. Include exact token names only when they have been read from `workflow/design-system/token.json` or confirmed design-system evidence.
+
+In `component decisions`, list only confirmed components that must be used, component variants or states that need designer confirmation, component composition choices that affect the page, and whether page-local components are allowed.
+
+In `uncertainty queue`, list only issues that need discussion before implementation:
+
+- token gap;
+- component gap;
+- variant uncertainty;
+- local component or page-local exception;
+- conflict with confirmed rules;
+- needs designer decision.
+
+In `routine implementation tokens`, state that routine tokens are omitted unless they affect design judgment. The implementation must still use only token names and values that actually exist in `workflow/design-system/token.json`.
+
+Continue the alignment conversation until the designer explicitly approves moving into the first version, prototype, or implementation. If the designer corrects or redirects the plan, update the current gate output and downstream assumptions before continuing.
+
+If a correction invalidates an earlier gate, return to that gate and revise downstream semantic decisions or execution constraints before continuing.
+
+Do not mark the Designer Alignment Gate complete while Gate 3 still has unresolved token gaps, component gaps, variant uncertainties, local-component decisions, rule conflicts, or other items that need designer confirmation. The designer may explicitly accept an unresolved item as local implementation judgment; if so, record that acceptance as part of the Gate 3 result.
 
 Do not continue into creation based only on the agent's judgment that the design is clear enough.
 
@@ -161,7 +238,7 @@ Depending on the user request, Phase 2 may output:
 
 ### Phase 2 Completion
 
-After Phase 2, report what was produced, whether the Designer Alignment Gate was explicitly approved by the designer, the key approval, correction, or redirect, which token and code evidence was used, which gaps remain, and whether any local prototype or page-level component should stay local or be considered later as a design-system candidate.
+After Phase 2, report what was produced, whether all three Designer Alignment Gate layers were explicitly approved by the designer, the key approval, correction, or redirect for each gate, which important token, component, and code evidence was used, which routine tokens were omitted from the gate because they did not affect design judgment, which gaps remain, and whether any local prototype or page-level component should stay local or be considered later as a design-system candidate.
 
 ## Phase 3: Design Audit And Fix
 

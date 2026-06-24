@@ -1,6 +1,6 @@
 # Interaction Rules
 
-Status: seed-draft
+Status: draft-for-prototype
 Evidence: FIG-SEED-LANDING-001, FIG-BUTTON-001
 Token mapping: tokens/motion.json, tokens/interaction.json
 Code mapping: components/ui/focus-ring.tsx, components/ui/skeleton.tsx, lib/motion.ts, lib/interaction-states.ts

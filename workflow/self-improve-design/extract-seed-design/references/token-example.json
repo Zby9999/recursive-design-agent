@@ -26,7 +26,7 @@
       },
       "neutral100": {
         "value": "#F8F7F4",
-        "status": "candidate-from-figma",
+        "status": "needs-designer-alignment",
         "evidenceIds": ["FIG-SEED-LANDING-001"]
       }
     },
@@ -92,7 +92,7 @@
           "role": "quiet secondary surface",
           "use": ["low-emphasis grouped content when repeated in evidence"],
           "avoid": ["global page background", "new card system without component evidence"],
-          "status": "candidate-from-figma",
+          "status": "needs-designer-alignment",
           "evidenceIds": ["FIG-SEED-LANDING-001"]
         }
       },
@@ -121,7 +121,7 @@
           "use": ["one primary action in a local decision area"],
           "avoid": ["secondary links", "decorative badges", "non-action emphasis"],
           "status": "draft-for-prototype",
-          "evidenceIds": ["FIG-SEED-LANDING-001", "DESIGNER-PHASE1-YYYY-MM-DD"]
+          "evidenceIds": ["FIG-SEED-LANDING-001", "DESIGNER-GATE-YYYY-MM-DD"]
         },
         "primaryFg": {
           "value": "{primitive.color.white}",
@@ -129,7 +129,7 @@
           "use": ["primary action labels"],
           "avoid": ["default text on light page surfaces"],
           "status": "draft-for-prototype",
-          "evidenceIds": ["FIG-SEED-LANDING-001", "DESIGNER-PHASE1-YYYY-MM-DD"]
+          "evidenceIds": ["FIG-SEED-LANDING-001", "DESIGNER-GATE-YYYY-MM-DD"]
         }
       }
     },
@@ -194,7 +194,7 @@
           "shadow": "{primitive.shadow.none}"
         },
         "status": "draft-for-prototype",
-        "evidenceIds": ["FIG-SEED-LANDING-001", "DESIGNER-PHASE1-YYYY-MM-DD"]
+        "evidenceIds": ["FIG-SEED-LANDING-001", "DESIGNER-GATE-YYYY-MM-DD"]
       }
     },
     "card": {
@@ -209,7 +209,7 @@
           "padding": "{primitive.space.6}",
           "shadow": "{primitive.shadow.card}"
         },
-        "status": "candidate-from-figma",
+        "status": "needs-designer-alignment",
         "evidenceIds": ["FIG-SEED-LANDING-001"]
       }
     },

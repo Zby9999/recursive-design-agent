@@ -1,6 +1,6 @@
 # Button
 
-Status: confirmed
+Status: formalized
 Evidence: FIG-BUTTON-001, FIG-SEED-LANDING-001
 Code mapping: components/ui/button.tsx
 Code status: implemented
@@ -20,7 +20,7 @@ Used for explicit user actions. Button hierarchy must match action importance.
 | Code status | implemented |
 | Verification target | component source, usage examples, Storybook or browser acceptance check if available |
 
-Use this code component whenever the product needs a Button that matches this design contract. If the code component is missing, mark `Code status: missing`, record the expected file path/API as a candidate, and do not claim the component is implemented.
+Use this code component whenever the product needs a Button that matches this design contract. If the code component is missing, mark `Code status: missing`, record the expected file path/API as an open implementation gap or `needs-designer-alignment`, and do not claim the component is implemented.
 
 ## Token link
 | Design concern | Token link | Code/API link | Notes |

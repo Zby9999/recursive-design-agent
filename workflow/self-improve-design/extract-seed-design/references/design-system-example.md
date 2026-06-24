@@ -48,7 +48,7 @@ Write up to 10 high-signal rules that cannot be fully represented by tokens, com
 9. Limit layouts to `[confirmed layout archetypes or variants]` until new evidence justifies another reusable variant.
 10. Interactions should feel `[motion and feedback tone]`; use `[cursor, focus, state tokens, subtle contrast, reserved space, or explicit controls]` as the main affordance channels.
 
-Remove any rule above that is not supported by evidence. Record suspected but unconfirmed rules as open gaps or candidates instead of padding the list.
+Remove any rule above that is not supported by evidence. Record suspected but unconfirmed rules as open gaps or `needs-designer-alignment` instead of padding the list.
 
 ## Formalized Scope
 

@@ -25,6 +25,7 @@ Use these values when `Phase 1 status` is `blocked` before retrieval:
 - Phase 1 failure before retrieval: yes
 - Design/prototype work performed: no
 - Phase 2 allowed: no
+- Designer Alignment Inputs available: no
 - Next required action: rerun in a runtime with subagent or delegation support
 
 ## Evidence Loaded
@@ -40,6 +41,31 @@ Use these values when `Phase 1 status` is `blocked` before retrieval:
 - Relevant components or patterns:
 - Token categories:
 - Interaction and state expectations:
+
+## Designer Alignment Inputs
+
+- Gate 1 page direction:
+  - confirmed or generic cues:
+  - candidate cues:
+  - open gaps or missing evidence:
+  - direction-level questions:
+- Gate 2 semantic decisions:
+  - layout density:
+  - visual hierarchy:
+  - component reuse posture:
+  - content density / narrative rhythm:
+  - emphasis strategy:
+  - interaction depth:
+  - semantic decisions needing designer confirmation:
+- Gate 3 execution contract:
+  - important token categories or confirmed token names:
+  - component decisions needing confirmation:
+  - token gaps:
+  - component gaps:
+  - variant uncertainties:
+  - possible local components or page-local exceptions:
+  - conflicts with confirmed rules:
+  - routine implementation tokens omitted unless design-relevant: yes / no
 
 ## Open Gaps And Limits
 
@@ -60,6 +86,7 @@ Use these values when `Phase 1 status` is `blocked` before retrieval:
 ## Next Step
 
 - Phase 2 allowed: yes / no
+- Next alignment gate to run: Gate 1 Page Direction / Gate 2 Semantic Decisions / Gate 3 Execution Contract / none
 - Recommended next action:
 - Next required action:
 - Requires designer decision: yes / no

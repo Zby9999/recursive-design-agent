@@ -1,6 +1,6 @@
 # Layout Rules
 
-Status: seed-draft
+Status: draft-for-prototype
 Evidence: FIG-SEED-LANDING-001
 Token mapping: tokens/layout.json, tokens/space.json, tokens/breakpoint.json
 Code mapping: components/layout/page-shell.tsx, components/layout/container.tsx, components/layout/section.tsx, components/layout/grid.tsx

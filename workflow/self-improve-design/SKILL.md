@@ -1,6 +1,6 @@
 ---
 name: design-agent-workflow
-description: Coordinate project-local design-agent workflows for turning Figma seed-page intent, design evidence, visual or Figma references, human intent, and existing design-system rules into reusable design decisions. Use when a task needs to route between first-pass design-system skeleton extraction from a Figma node, extracting rules after designer confirmation, designing from visual/Figma references, designing from human intent with an existing design system, reviewing design outputs, or evaluating whether UI corrections should update durable design rules.
+description: Coordinate project-local design-agent workflows for turning Figma seed-page intent, design evidence, visual or Figma references, human intent, and existing design-system rules into reusable design decisions. Use when a task needs to route between seed design-system extraction from a Figma node, designing from visual/Figma references, designing from human intent with an existing design system, reviewing design outputs, or evaluating whether UI corrections should update durable design rules.
 ---
 
 # Design Agent Workflow
@@ -16,8 +16,7 @@ Use this as the project-local routing Skill for reusable design-agent work. Trea
 
 ## Route
 
-- Use `align-design-intent/` when the user provides a Figma link/node for a seed or high-fidelity page and asks for a first-pass design-system skeleton candidate, including design principles, visual language, tokens, layout, components, interaction hypotheses, content style observations, and open questions before formal extraction.
-- Use `extract-seed-design/` only after the designer answers candidate questions or clearly signals that design intent is confirmed and ready for formal design-system extraction.
+- Use `extract-seed-design/` when the user provides a Figma link/node for a seed or high-fidelity page and asks to extract, align, draft, validate, or formalize a first-version design system. This Skill owns Figma evidence intake, the three-gate intent alignment, draft token/component extraction, prototype validation, and final formalization.
 - Use `design-from-visual-reference/` when the user asks to create or implement a web/UI surface from a visual reference, Figma reference, screenshot, or parity target.
 - Use `design-with-design-system/` when the user gives human intent or product requirements and expects the agent to design using an existing design system.
 - Use `design-review/` when the user asks to review, audit, or验收 a design output against intent, evidence, visual references, or design-system rules.
