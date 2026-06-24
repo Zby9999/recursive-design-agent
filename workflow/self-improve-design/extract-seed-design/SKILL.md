@@ -195,6 +195,9 @@ Do not enter Phase 3 while Gate 3 still has unresolved items that block draft ex
 Use this phase only after the designer has approved Gate 3 and explicitly allowed draft extraction.
 
 1. Re-read the original Figma evidence and designer gate answers.
+
+Do not ignore or compress away extraction-relevant information surfaced during the three gates; carry each finding forward as a draft rule, page-local exception, or open gap while preserving its stated scope.
+
 2. Use original evidence and registered Evidence IDs directly when writing draft content:
    - Prefer evidence IDs already registered in `workflow/design-system/design-reference-list.md`.
    - If a needed current-project source is not registered yet, register it in `workflow/design-system/design-reference-list.md` in the same pass with its source locator instead of inventing an ID.
@@ -218,16 +221,17 @@ Draft write rules:
 
 Use the draft tokens/components to recreate the original seed design as an inspectable prototype or rendered surface.
 
-1. Prefer existing project tooling and real manifests if a codebase exists.
-2. If no implementation target exists, describe the required prototype surface and stop for user direction.
-3. Use the draft tokens/components as the design contract for reconstruction.
-4. Capture prototype/render evidence such as a browser screenshot, Storybook view, local page, Figma component preview, or equivalent inspectable surface.
-5. Compare the prototype/rendered output against the original Figma evidence.
-6. Treat designer corrections as evidence for draft refinement, not as immediate formal rules.
-7. Update draft tokens, component specs, or layout assumptions to reduce visual drift.
-8. Keep affected items marked `draft-for-prototype` or `needs-designer-alignment`.
-9. Reconstruct or re-render the prototype after meaningful changes.
-10. Repeat until the designer says the prototype is satisfactory.
+1. Prefer existing project tooling and real manifests if a codebase exists in the current working directory or project root.
+2. Treat the current working directory or project root as the default implementation location. Do not create a new prototype folder, sibling repo, or deployment workspace unless the user explicitly requests one.
+3. If no technical implementation stack or render surface is specified, stop and ask the user which prototype surface to use, such as a local page, Storybook view, static HTML page, Figma component preview, or equivalent inspectable surface. Ask about the technical surface, not the filesystem location.
+4. Use the draft tokens/components as the design contract for reconstruction.
+5. Capture prototype/render evidence such as a browser screenshot, Storybook view, local page, Figma component preview, or equivalent inspectable surface.
+6. Compare the prototype/rendered output against the original Figma evidence.
+7. Treat designer corrections as evidence for draft refinement, not as immediate formal rules.
+8. Update draft tokens, component specs, or layout assumptions to reduce visual drift.
+9. Keep affected items marked `draft-for-prototype` or `needs-designer-alignment`.
+10. Reconstruct or re-render the prototype after meaningful changes.
+11. Repeat until the designer says the prototype is satisfactory.
 
 Do not remove draft markers or write the final `design-system.md` rules until the designer gives approval.
 
