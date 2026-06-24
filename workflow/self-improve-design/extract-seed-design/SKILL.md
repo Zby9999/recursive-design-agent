@@ -141,9 +141,21 @@ For each relevant semantic decision, present:
 
 - `decision area:`
 - `default from evidence:`
+- `questions for the designer:`
 - `designer choice:`
 - `evidence status:` evidence-observed / designer-aligned / needs-designer-alignment / open gap
 - `draft implication:`
+
+In `questions for the designer`, ask only questions that affect semantic extraction decisions. Focus on what the observed pattern means, when it should be reused, when it should stay local, and what should remain unresolved instead of being extracted.
+
+Useful Gate 2 questions clarify one of four things:
+
+- semantic meaning: what role the observed pattern plays;
+- reuse scope: whether it is reusable, page-local, or seed-local;
+- variant/state boundary: whether nearby differences are variants, states, or separate patterns;
+- extraction readiness: whether the decision is safe to draft now or should remain an open gap.
+
+Do not ask broad exploratory questions, taste questions, implementation questions, file-organization questions, token schema questions, or routine measurement questions in Gate 2.
 
 Do not treat agent inference as designer alignment.
 
