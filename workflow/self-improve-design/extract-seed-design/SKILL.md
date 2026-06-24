@@ -15,7 +15,7 @@ The core rule: do not turn static Figma interpretation directly into confirmed d
 
 This Skill has five phases:
 
-1. `Figma Evidence Intake`: inspect raw Figma data and screenshot evidence, then produce a compact Seed Evidence Packet.
+1. `Figma Evidence Intake`: inspect raw Figma data and screenshot evidence, then proceed directly to the three alignment gates.
 2. `Three-Gate Intent Alignment`: stop at three small designer gates before any draft design-system file writes.
 3. `Draft Contract Extraction`: write draft semantic tokens and draft component inventory/specs for prototype use.
 4. `Prototype Validation Loop`: reconstruct the seed design and refine drafts until the designer is satisfied.
@@ -60,7 +60,7 @@ Reference files are not automatically loaded. Read them only when their file sha
 - In Phase 3, read `references/each-component-example.md` before writing draft component inventory or per-component specs.
 - In Phase 5, read the matching reference before formalizing that file type.
 - Before writing `workflow/design-system/design-reference-list.md`, read `references/design-reference-list-example.md`.
-- Before writing `workflow/design-system/design-system.md`, read `references/design-system-example.md` and the `design-system.md Contract` section below.
+- Before writing `workflow/design-system/design-system.md`, read `references/design-system-example.md`.
 - Before writing `workflow/design-system/layout-rules.md`, read `references/layout-rules-example.md`.
 - Before writing `workflow/design-system/interaction-rules.md`, read `references/interaction-rules.md`.
 - Before writing a per-component spec under `workflow/design-system/component-spec/`, read `references/each-component-example.md`.
@@ -70,7 +70,7 @@ Reference files are not automatically loaded. Read them only when their file sha
 
 - Do not load every design-system file or every reference by default.
 - Prefer targeted reads: relevant headings, searched sections, the file being updated, and the matching reference.
-- Use the Context Ledger to compress Figma evidence, designer gate answers, draft outputs, and prototype evidence before writing or formalizing.
+- Use the original Figma raw data, screenshot evidence, and designer gate answers directly when drafting.
 - For Figma, inspect the target node and relevant child nodes. Do not treat the whole file as required context unless the user asks for global system extraction.
 
 ## Phase 1: Figma Evidence Intake
@@ -89,37 +89,15 @@ Collect and compare two evidence views for the same Figma node:
 1. Figma raw data, inspect metadata, node hierarchy, properties, text, styles, measurements, and component information when available.
 2. A screenshot or visual capture of the same node.
 
-After intake, return a compact Seed Evidence Packet in the working response:
-
-```markdown
-## Seed Evidence Packet
-
-- Source Figma node:
-- Target surface:
-- Raw Figma data: available / missing + short note
-- Screenshot: available / missing + short note
-- Known exclusions:
-
-### Confirmed From Evidence
-- <observable fact> (source: <Figma node / screenshot / metadata locator>)
-
-### Reasonable Inference
-- <inference> (source: <locator>; confidence: <short reason>)
-
-### Open Evidence Gaps
-- <missing evidence, conflict, or unresolved interpretation>
-
-### Out Of Scope
-- <decorative, exploratory, outdated, or excluded area>
-```
+After intake, proceed directly to Gate 1.
 
 Do not write `workflow/design-system/design-system.md`, `token.json`, `layout-rules.md`, `interaction-rules.md`, `component-list.md`, or component specs in Phase 1.
 
 ## Phase 2: Three-Gate Intent Alignment
 
-Use this phase after the Seed Evidence Packet exists.
+Use this phase after Figma evidence intake is complete.
 
-The three gates are user-facing stop gates. Each gate should be short, evidence-bounded, and focused on one decision layer. Stop after each gate unless the designer answers, corrects, or approves it.
+The three gates are user-facing stop gates. Each gate should be short, evidence-bounded, and focused on one decision layer. At each gate, ask the designer concrete questions or choice prompts for that decision layer, then stop unless the designer answers, corrects, or approves it.
 
 If the designer provides explicit answers to all three gates at once, you may continue to Phase 3 only when the designer also explicitly approves starting draft extraction.
 
@@ -204,16 +182,15 @@ Do not enter Phase 3 while Gate 3 still has unresolved items that block draft ex
 
 Use this phase only after the designer has approved Gate 3 and explicitly allowed draft extraction.
 
-1. Re-read the Seed Evidence Packet, original Figma evidence, and designer gate answers.
-2. Build an allowed evidence list before writing draft content:
+1. Re-read the original Figma evidence and designer gate answers.
+2. Use original evidence and registered Evidence IDs directly when writing draft content:
    - Prefer evidence IDs already registered in `workflow/design-system/design-reference-list.md`.
-   - If a needed current-project source is not registered yet, register it in `workflow/design-system/design-reference-list.md` in the same pass or keep it as a source locator in the Context Ledger instead of inventing an ID.
+   - If a needed current-project source is not registered yet, register it in `workflow/design-system/design-reference-list.md` in the same pass with its source locator instead of inventing an ID.
    - Do not treat IDs, values, component names, or code paths from `references/*` examples as current-project evidence.
-3. Build a Context Ledger before writing draft content.
-4. Write draft semantic tokens into `workflow/design-system/token.json`.
-5. Write draft component inventory into `workflow/design-system/component-list.md`.
-6. Write per-component draft specs under `workflow/design-system/component-spec/` only when needed for prototype reconstruction.
-7. Do not formalize `design-system.md`, `layout-rules.md`, or `interaction-rules.md` yet unless a small draft note is needed to support prototype reconstruction.
+3. Write draft semantic tokens into `workflow/design-system/token.json`.
+4. Write draft component inventory into `workflow/design-system/component-list.md`.
+5. Write per-component draft specs under `workflow/design-system/component-spec/` only when needed for prototype reconstruction.
+6. Do not formalize `design-system.md`, `layout-rules.md`, or `interaction-rules.md` yet unless a small draft note is needed to support prototype reconstruction.
 
 Draft write rules:
 
@@ -222,7 +199,7 @@ Draft write rules:
 - Draft component specs may include anatomy, variants, states, token links, code links, and usage rules needed for prototype reconstruction.
 - Draft content must not use `confirmed`, `formalized`, or final-rule language.
 - If a value, semantic role, component, variant, or state is plausible but uncertain, mark it `needs-designer-alignment`.
-- Draft outputs may reference only evidence IDs from the allowed evidence list. If supporting evidence is missing or only implied by a reference example, record the missing source as an evidence gap instead of filling a fake ID.
+- Draft outputs may reference only registered Evidence IDs. If supporting evidence is missing or only implied by a reference example, record the missing source as an evidence gap instead of filling a fake ID.
 - In `token.json`, `component-list.md`, and component specs, fields named `source`, `sources`, `evidence`, `evidenceIds`, `designEvidence`, or `prototypeEvidence` must contain registered Evidence IDs only, such as `FIG-SEED-LANDING-001`, `DESIGNER-GATE-2026-06-24`, or `PROTO-SEED-2026-06-24`. Do not put file paths, Figma file keys, node IDs, tool-call history, dates, current-conversation notes, or approval prose in these fields. Put those details in `workflow/design-system/design-reference-list.md` as `Source locator`, `Evidence excerpt / block`, `Screenshot`, `URL`, or `Last checked`, then reference only the registered Evidence ID in draft outputs.
 
 ## Phase 4: Prototype Validation Loop
@@ -253,71 +230,6 @@ Use this phase only after the designer confirms the prototype/rendered result is
 3. Complete `design-reference-list.md`, `layout-rules.md`, `interaction-rules.md`, `component-list.md`, and per-component specs as needed.
 4. Write `design-system.md` last, after approved tokens/components and prototype evidence exist.
 5. Keep unresolved items as `open gap`, `project exception`, or `needs-designer-alignment`.
-
-## Context Ledger
-
-Before writing draft or formal rules, create a compact ledger in the working response:
-
-```markdown
-| Decision area | Figma evidence | Designer gate answer | Draft output | Prototype/render evidence | Designer approval | Output file | Status |
-|---|---|---|---|---|---|---|---|
-| Design principles | ... | ... | ... | ... | ... | design-system.md | evidence-observed/designer-aligned/draft-for-prototype/designer-approved/formalized |
-| Tokens | ... | ... | ... | ... | ... | token.json | evidence-observed/designer-aligned/draft-for-prototype/designer-approved/formalized |
-| Components | ... | ... | ... | ... | ... | component-list.md / component spec | evidence-observed/designer-aligned/draft-for-prototype/designer-approved/formalized |
-| Layout | ... | ... | ... | ... | ... | layout-rules.md | evidence-observed/designer-aligned/draft-for-prototype/designer-approved/formalized |
-| Interaction | ... | ... | ... | ... | ... | interaction-rules.md | evidence-observed/designer-aligned/draft-for-prototype/designer-approved/formalized |
-```
-
-Rules:
-
-- A draft item must trace to Figma evidence or designer gate alignment.
-- A formalized item should trace to prototype/render evidence and designer approval.
-- If sources conflict, do not silently choose. Record the conflict as `open gap`, `project exception`, or `needs-designer-alignment`.
-- If Figma tooling or prototype evidence is unavailable, say what evidence is missing and avoid confident claims that depend on it.
-
-## Formal File Roles
-
-Update only the files that own the decision.
-
-- `workflow/design-system/design-reference-list.md`: evidence registry, source scope, exclusions, prototype evidence, and last-checked metadata.
-- `workflow/design-system/design-system.md`: file routing plus the 10 most important non-code consistency rules; write this last.
-- `workflow/design-system/token.json`: semantic token contract and raw values, first as draft and later as formal.
-- `workflow/design-system/layout-rules.md`: reusable layout rules, grid behavior, spacing relationships, and responsive structure.
-- `workflow/design-system/interaction-rules.md`: shared interaction, motion, state, focus, loading, empty, and error behavior.
-- `workflow/design-system/component-list.md`: component inventory, status, evidence IDs, prototype evidence, and links to specs/code.
-- `workflow/design-system/component-spec/`: per-component contracts, including anatomy, variants, states, token links, code links, usage rules, and current status.
-
-## `design-system.md` Contract
-
-`design-system.md` has two purposes.
-
-### File routing
-
-Write it as the entrypoint for future design tasks. It should tell future agents which file to read first and what has priority.
-
-Priority order:
-
-1. Engineering artifacts when they exist: token files, component code, component specs, layout/interaction primitives, usage examples.
-2. Machine-readable design-system files: `token.json`, structured component lists, and structured rule tables.
-3. Natural-language design-system docs for ambiguous intent, abstract principles, exception boundaries, and judgment that code cannot express.
-
-`design-system.md` must not replace engineering facts. It routes agents to the right files and explains high-level design direction.
-
-### Core consistency rules
-
-Add up to 10 high-signal rules that cannot be fully represented by code, tokens, or component APIs.
-
-Good rules describe:
-
-- the visual direction future surfaces should preserve,
-- how to choose between similar components or layouts,
-- what should stay quiet, dense, expressive, formal, or utilitarian,
-- how hierarchy, rhythm, restraint, emphasis, or product tone should behave,
-- what should not be generalized even if it appears in the seed page.
-
-Include fewer than 10 rules when the evidence does not support 10 distinct reusable rules. Do not pad the list with token values, component API facts, implementation details, or one-off page observations. If an important rule is suspected but not yet supported, record it as an open gap instead of padding the list.
-
-Do not use this section for token values, component API facts, code paths, or facts already covered by structured files.
 
 ## Token Rules
 

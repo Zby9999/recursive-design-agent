@@ -89,7 +89,7 @@ When Phase 2 includes creating an initial design proposal, prototype, or impleme
 
 After reading the Context Packet, `workflow/design-system/token.json`, relevant code, and implementation precedent, stop before creating any design proposal, prototype, or implementation. Even if the main agent believes the request is clear, the designer must control whether work continues.
 
-Use the three gates below to move from broad intent to executable constraints. Do not collapse the gates into one generic approval unless the designer has already given explicit answers that cover all three layers.
+Use the three gates below to move from broad intent to executable constraints. At each gate, ask the designer concrete questions or choice prompts for that decision layer, then stop for the answer. Do not collapse the gates into one generic approval unless the designer has already given explicit answers that cover all three layers.
 
 #### Gate 1: Page Direction
 
