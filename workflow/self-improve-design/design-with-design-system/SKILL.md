@@ -133,7 +133,7 @@ For each relevant semantic decision, present:
 
 - `decision:`
 - `default from evidence:`
-- `designer choice:`
+- `clarify questions for designer:`
 - `evidence status:` confirmed / generic / candidate / open gap / missing
 - `implementation implication:`
 
@@ -163,7 +163,7 @@ In `uncertainty queue`, list only issues that need discussion before implementat
 - variant uncertainty;
 - local component or page-local exception;
 - conflict with confirmed rules;
-- needs designer decision.
+- clarify questions for designer.
 
 In `routine implementation tokens`, state that routine tokens are omitted unless they affect design judgment. The implementation must still use only token names and values that actually exist in `workflow/design-system/token.json`.
 

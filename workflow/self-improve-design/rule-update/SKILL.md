@@ -14,7 +14,7 @@ This Skill can be called by other `self-improve-design` Skills after a design ou
 - The completed or reviewed design, prototype, page, or UI surface.
 - Designer feedback, approval, correction, or review finding.
 - The rules, components, tokens, candidates, examples, code precedent, and open gaps used during the work.
-- Any prototype, screenshot, browser, Figma, or implementation evidence available.
+- Any prototype, before/after screenshot, browser, Figma, or implementation evidence available.
 - The formal design-system source files that might be affected.
 
 ## Classification
@@ -35,12 +35,13 @@ Use `none found` when the work does not expose any design-system implications.
 1. Identify the exact behavior, visual decision, component pattern, token need, rule conflict, or missing rule under consideration.
 2. Check whether an existing confirmed design-system rule already covers it.
 3. Compare the change against available evidence, including designer feedback, prototype evidence, implementation evidence, and existing rules.
-4. Classify the implication using the labels above.
-5. State whether the item should remain local, become a reusable candidate, stay as an open gap, or become a proposed design-system update.
-6. Identify the smallest consistent update set that could satisfy the designer-approved requirement without adding unrelated rules, duplicated prose, speculative examples, or broad cleanup.
-7. Check whether the possible semantic rule change also affects any structured JSON contract, inventory, schema, token file, or implementation-facing constant.
-8. If the user wants a pre-update feasibility answer, return a recommendation, evidence summary, minimum update scope, exclusions, proposed destination files, structured files to check, risks of over-generalizing, and remaining gaps.
-9. Do not apply proposed design-system updates unless the designer explicitly approves the specific modifications.
+4. For visible UI decisions, identify the pre-decision state and post-decision state. If either side lacks real visual evidence, record it as `missing`; if the decision has no visible UI impact, record it as `not applicable`.
+5. Classify the implication using the labels above.
+6. State whether the item should remain local, become a reusable candidate, stay as an open gap, or become a proposed design-system update.
+7. Identify the smallest consistent update set that could satisfy the designer-approved requirement without adding unrelated rules, duplicated prose, speculative examples, or broad cleanup.
+8. Check whether the possible semantic rule change also affects any structured JSON contract, inventory, schema, token file, or implementation-facing constant.
+9. If the user wants a pre-update feasibility answer, return a recommendation, evidence summary, minimum update scope, exclusions, proposed destination files, structured files to check, risks of over-generalizing, and remaining gaps.
+10. Do not apply proposed design-system updates unless the designer explicitly approves the specific modifications.
 
 ## Minimal Effective Update
 
@@ -84,6 +85,17 @@ A design-system update includes extending, deleting, or modifying formal design-
 
 Do not create a decision evidence folder for unapplied `reusable candidate`, `open gap`, or `proposed design-system update` items. Keep those in the Rule Update summary unless the designer explicitly asks for a durable candidate record.
 
+## Visual Impact Evidence
+
+When an applied design-system update changes visible UI behavior, capture the decision impact as a before/after pair:
+
+- `before-screenshot.png`: the design state before the decision was applied, such as the reviewed issue, rejected version, or pre-correction prototype.
+- `after-screenshot.png`: the design state after the decision was applied.
+
+Only use real screenshots or rendered captures. Do not create placeholder images.
+
+If one side is unavailable, keep the available screenshot and mark the missing side in `record.md`. If the update has no visible UI impact, mark both sides `not applicable`.
+
 ## Decision Evidence Records
 
 When an applied design-system update requires a record, create a new folder under `workflow/decision-evidence/`.
@@ -100,16 +112,18 @@ Each new decision evidence folder must include:
 - `record.md`
 - `designer-reply.md`
 - `design-system-diff.md`
-- `prototype-screenshot.png` only when a real screenshot exists
+- `before-screenshot.png` when real pre-decision visual evidence exists
+- `after-screenshot.png` when real post-decision visual evidence exists
 
-If no real prototype screenshot exists, do not create a placeholder image. In `record.md`, mark `Prototype screenshot: missing` and state why.
+If no real screenshot exists for one or both sides, do not create placeholder images. In `record.md`, mark each missing or not-applicable side and state why.
 
 Decision evidence files should capture:
 
-- `record.md`: decision id, date, trigger, update type, affected design-system files, status, screenshot status, and open gaps.
+- `record.md`: decision id, date, trigger, update type, affected design-system files, status, before/after visual evidence status, impact assessability, and open gaps.
 - `designer-reply.md`: designer wording or a faithful summary, source location, and time.
-- `design-system-diff.md`: modified semantic design-system files and structured JSON files, before/after summary for both representations, modification rationale, consistency notes, and the linked designer reply or screenshot evidence.
-- `prototype-screenshot.png`: the prototype/page screenshot that produced the decision, when available.
+- `design-system-diff.md`: modified semantic design-system files and structured JSON files, before/after summary for both representations, visual area affected, before state, after state, intended impact, observed side effects or unverified side effects, modification rationale, consistency notes, and the linked designer reply or screenshot evidence.
+- `before-screenshot.png`: the pre-decision prototype/page state, when available and relevant.
+- `after-screenshot.png`: the post-decision prototype/page state, when available and relevant.
 
 ## Output
 
@@ -121,6 +135,7 @@ Return a concise Rule Update summary:
 - minimum effective update:
 - proposed destination file, if any:
 - structured files checked / modified:
+- visual impact evidence:
 - designer approval required: yes / no
 - formal design-system files modified: yes / no
 - decision evidence folder, if created:

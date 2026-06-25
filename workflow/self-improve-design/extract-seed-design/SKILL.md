@@ -121,74 +121,61 @@ Cover only:
 
 Do not ask about token names, component APIs, or file destinations in Gate 1.
 
-### Gate 2: Semantic Rules
+### Gate 2: Design Decision Alignment
 
 Start Gate 2 only after the designer approves or corrects Gate 1.
 
-Gate 2 translates seed-design intent into semantic rules for extraction. These are not formal design-system updates yet; they define what the draft should test.
+Gate 2 aligns extraction-facing design decisions with the later design-system rule layers. It is not a token extraction, evidence registry, or file-placement gate.
 
-Use only the decision areas that matter for the seed:
+Use only the rule layers that matter for the seed:
 
-- color roles;
-- typography roles;
-- spacing, density, radius, shadow, and motion roles;
-- layout archetypes and responsive behavior;
-- component boundaries, anatomy, variants, and states;
-- content density / narrative rhythm;
-- interaction, hover, focus, loading, empty, error, disabled, and motion expectations.
+- system framing, design language, reusable boundaries, and non-generalizable seed details for `design-system.md`;
+- component boundaries, anatomy, variants, and states for `component-list.md` and `component-spec/*`;
+- layout archetypes, spacing relationships, density, and responsive behavior for `layout-rules.md`;
+- interaction, hover, focus, loading, empty, error, disabled, and motion expectations for `interaction-rules.md`.
 
-For each relevant semantic decision, present:
+For each relevant rule layer, present only:
 
-- `decision area:`
-- `default from evidence:`
-- `questions for the designer:`
-- `designer choice:`
-- `evidence status:` evidence-observed / designer-aligned / needs-designer-alignment / open gap
-- `draft implication:`
+- `agent assumption:`
+- `question for designer:`
 
-In `questions for the designer`, ask only questions that affect semantic extraction decisions. Focus on what the observed pattern means, when it should be reused, when it should stay local, and what should remain unresolved instead of being extracted.
+In `agent assumption`, state the evidence-backed design decision the agent would extract for that rule layer.
 
-Useful Gate 2 questions clarify one of four things:
+In `question for designer`, ask only the smallest question needed to confirm, correct, or reject that design decision.
 
-- semantic meaning: what role the observed pattern plays;
-- reuse scope: whether it is reusable, page-local, or seed-local;
-- variant/state boundary: whether nearby differences are variants, states, or separate patterns;
-- extraction readiness: whether the decision is safe to draft now or should remain an open gap.
+Useful Gate 2 questions clarify design meaning, component boundaries, layout behavior, interaction semantics, or unresolved design judgment.
 
-Do not ask broad exploratory questions, taste questions, implementation questions, file-organization questions, token schema questions, or routine measurement questions in Gate 2.
+Do not ask broad exploratory questions, taste questions, implementation questions, file-organization questions, token naming questions, raw token value questions, token schema questions, evidence registry questions, or routine measurement questions in Gate 2.
 
 Do not treat agent inference as designer alignment.
 
-### Gate 3: Draft Contract
+### Gate 3: Generalization and Placement Contract
 
 Start Gate 3 only after the designer approves or corrects Gate 2.
 
-Gate 3 decides what draft files and prototype checks are allowed. Keep it concise; do not list every routine token or every component detail.
+Gate 3 decides how every extraction-relevant finding from Figma intake and the three gates will be generalized, localized, or left unresolved before draft writing.
 
-Present only:
+Internally classify findings by:
 
-- `important token groups:`
-- `components to extract:`
-- `uncertainty queue:`
+- `default rule candidates:`
+- `component-level rule candidates:`
+- `seed-local or page-local exceptions:`
+- `token generalization decisions:`
+- `open gaps and do-not-extract items:`
 - `prototype validation surface:`
 - `files to draft:`
 
-In `important token groups`, list only token groups or token names that affect system direction, semantic roles, hierarchy, density, brand feel, interaction semantics, or known constraints.
+In `default rule candidates`, list findings that should become system-level defaults unless prototype validation contradicts them.
 
-In `components to extract`, list repeated or structurally important components, their likely anatomy/variants/states, and whether each is ready for draft extraction or still needs designer alignment.
+In `component-level rule candidates`, list component boundaries, anatomy, variants, states, and component-specific rules that should not become global defaults.
 
-In `uncertainty queue`, list only issues that need discussion before implementation:
+In `seed-local or page-local exceptions`, list findings needed to reproduce the seed or prototype but not safe to generalize.
 
-- token role gap;
-- component boundary gap;
-- variant or state uncertainty;
-- layout or responsive uncertainty;
-- interaction uncertainty;
-- evidence conflict;
-- local exception or non-generalizable detail;
-- needs designer decision.
+In `token generalization decisions`, classify token groups or readable values as system defaults, component-level tokens, seed/page-local prototype tokens, or open gaps. The main risk to check is whether a token that only serves the first page is being promoted into a reusable design rule.
 
-Do not enter Phase 3 while Gate 3 still has unresolved items that block draft extraction. The designer may explicitly accept an unresolved item as draft judgment for prototype testing; if so, record that acceptance as part of the Gate 3 result.
+In `open gaps and do-not-extract items`, list unresolved decisions, unsupported extrapolations, evidence conflicts, and findings that should not enter the draft.
+
+Do not enter Phase 3 until every extraction-relevant finding has a Gate 3 placement or explicit open-gap / do-not-extract disposition. The designer may explicitly accept an unresolved item as draft judgment for prototype testing; if so, record that acceptance as part of the Gate 3 result.
 
 ## Phase 3: Draft Contract Extraction
 
