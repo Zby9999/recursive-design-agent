@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MAP",
-  description: "Recursive design agent workbench"
+  title: "Ikran",
+  description: "Local recursive design workbench"
 };
 
 export default function RootLayout({
