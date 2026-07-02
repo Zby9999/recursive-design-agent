@@ -15,7 +15,7 @@ import {
   FolderSimpleIcon
 } from "@phosphor-icons/react";
 import { useEffect, useMemo, useState } from "react";
-import { AgentConnectorCard } from "./AgentConnectorCard";
+import { type AgentId, AgentConnectorCard } from "./AgentConnectorCard";
 import { activeIconGradients, IconGradients } from "./IconGradients";
 import { CompleteCheckIcon, IconBox } from "./IconBox";
 import { SetupActionButton } from "./SetupActionButton";
@@ -40,10 +40,19 @@ type HeartbeatEvent = {
   timestamp: string;
 };
 
+type ProjectState =
+  | { status: "idle" }
+  | { status: "selecting" }
+  | { status: "binding"; path: string }
+  | { status: "bound"; path: string; name: string }
+  | { status: "error"; message: string };
+
 export function ProjectSetupCard({ bootstrap }: { bootstrap: Bootstrap }) {
   const [runtimeState, setRuntimeState] = useState<RuntimeState>("loading");
   const [health, setHealth] = useState<HealthResponse | null>(null);
   const [heartbeat, setHeartbeat] = useState<HeartbeatEvent | null>(null);
+  const [project, setProject] = useState<ProjectState>({ status: "idle" });
+  const [selectedAgent, setSelectedAgent] = useState<AgentId | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,6 +104,147 @@ export function ProjectSetupCard({ bootstrap }: { bootstrap: Bootstrap }) {
     return () => events.close();
   }, [bootstrap.session]);
 
+  // Recover active project after refresh.
+  useEffect(() => {
+    let cancelled = false;
+    async function loadActiveProject() {
+      try {
+        const response = await fetch("/api/project", {
+          cache: "no-store",
+          headers: { "x-ikran-session": bootstrap.session }
+        });
+        if (!response.ok) {
+          return;
+        }
+        const data = (await response.json()) as {
+          ok: boolean;
+          project?: { path: string; name: string };
+        };
+        if (!cancelled && data.ok && data.project) {
+          setProject({
+            status: "bound",
+            path: data.project.path,
+            name: data.project.name
+          });
+        }
+      } catch {
+        // ignore; UI stays in idle/selecting state
+      }
+    }
+    loadActiveProject();
+    return () => {
+      cancelled = true;
+    };
+  }, [bootstrap.session]);
+
+  async function handleSelectFolder() {
+    if (runtimeState !== "connected") return;
+
+    const previousProject = project;
+    const previousAgent = selectedAgent;
+    const restorePreviousProject = () => {
+      setProject(previousProject);
+      setSelectedAgent(previousAgent);
+    };
+    const applyBoundProject = (nextProject: { path: string; name: string }) => {
+      setProject({
+        status: "bound",
+        path: nextProject.path,
+        name: nextProject.name
+      });
+      setSelectedAgent(
+        previousProject.status === "bound" && previousProject.path === nextProject.path
+          ? previousAgent
+          : null
+      );
+    };
+
+    setSelectedAgent(null);
+    setProject({ status: "selecting" });
+    try {
+      const response = await fetch("/api/project/select-folder", {
+        method: "POST",
+        headers: { "x-ikran-session": bootstrap.session }
+      });
+      const data = (await response.json()) as {
+        ok: boolean;
+        path?: string;
+        project?: { path: string; name: string };
+        error?: string;
+        detail?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        if (data.error === "native_picker_cancelled") {
+          restorePreviousProject();
+          return;
+        }
+
+        const fallback = data.error || "native_picker_unavailable";
+        // Fall back to a manual path prompt when the native picker is unavailable.
+        const manualPath = window.prompt(
+          `Native folder picker could not open (${fallback}${data.detail ? `: ${data.detail}` : ""}). Enter the full project folder path:`
+        );
+        if (manualPath) {
+          await bindFolder(manualPath);
+        } else {
+          restorePreviousProject();
+        }
+        return;
+      }
+
+      if (data.project) {
+        applyBoundProject(data.project);
+        return;
+      }
+
+      if (data.path) {
+        await bindFolder(data.path);
+      } else {
+        restorePreviousProject();
+      }
+    } catch {
+      if (previousProject.status === "bound") {
+        restorePreviousProject();
+        return;
+      }
+      setProject({ status: "error", message: "Could not open folder picker" });
+    }
+  }
+
+  async function bindFolder(folderPath: string) {
+    setProject({ status: "binding", path: folderPath });
+    try {
+      const response = await fetch("/api/project/bind", {
+        method: "POST",
+        headers: {
+          "x-ikran-session": bootstrap.session,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ path: folderPath })
+      });
+      const data = (await response.json()) as {
+        ok: boolean;
+        project?: { path: string; name: string };
+        error?: string;
+      };
+      if (!response.ok || !data.ok || !data.project) {
+        setProject({
+          status: "error",
+          message: data.error || "binding_failed"
+        });
+        return;
+      }
+      setProject({
+        status: "bound",
+        path: data.project.path,
+        name: data.project.name
+      });
+    } catch {
+      setProject({ status: "error", message: "binding_failed" });
+    }
+  }
+
   const helper = useMemo(() => {
     if (runtimeState === "connected") {
       return "Local runtime connected";
@@ -106,6 +256,8 @@ export function ProjectSetupCard({ bootstrap }: { bootstrap: Bootstrap }) {
   }, [runtimeState]);
 
   const folderReady = runtimeState === "connected";
+  const agentReady = project.status === "bound";
+  const buildingReady = agentReady && selectedAgent !== null;
 
   return (
     <main className="page">
@@ -136,7 +288,7 @@ export function ProjectSetupCard({ bootstrap }: { bootstrap: Bootstrap }) {
             stepNumber={runtimeState === "connected" ? undefined : 1}
             stepNumberActive
             stepNumberTone="pink"
-            helper={renderRuntimeHelper(runtimeState, helper, heartbeat)}
+            helper={renderRuntimeHelper(runtimeState, helper)}
             helperTone={
               runtimeState === "connected"
                 ? "success"
@@ -148,54 +300,81 @@ export function ProjectSetupCard({ bootstrap }: { bootstrap: Bootstrap }) {
           />
           <SetupStepButton
             icon={
-              <IconBox tone={folderReady ? "blue" : "gray"}>
-                <FolderSimpleIcon
-                  color={folderReady ? activeIconGradients.folder : "white"}
-                  size={14}
-                  weight="fill"
-                />
-              </IconBox>
+              project.status === "bound" ? (
+                <CompleteCheckIcon />
+              ) : (
+                <IconBox tone={folderReady ? "blue" : "gray"}>
+                  <FolderSimpleIcon
+                    color={folderReady ? activeIconGradients.folder : "white"}
+                    size={14}
+                    weight="fill"
+                  />
+                </IconBox>
+              )
             }
             label="Select a Folder"
-            stepNumber={2}
+            stepNumber={project.status === "bound" ? undefined : 2}
             stepNumberTone={folderReady ? "blue" : "gray"}
-            helper={
-              <>
-                Choose a local folder for <strong>files storage</strong> of this
-                project
-              </>
+            labelComplete={project.status === "bound"}
+            helper={renderFolderHelper(project)}
+            helperTone={
+              project.status === "bound"
+                ? "success"
+                : project.status === "error"
+                  ? "error"
+                  : "default"
             }
-            disabled={!folderReady}
+            helperTestId="folder-helper"
+            rowTestId="select-folder-button"
+            onClick={handleSelectFolder}
+            disabled={!folderReady || project.status === "selecting" || project.status === "binding"}
           />
-          <AgentConnectorCard />
+          <AgentConnectorCard
+            active={agentReady}
+            selectedAgent={selectedAgent}
+            onSelectAgent={setSelectedAgent}
+          />
         </div>
 
-        <SetupActionButton label="Start Building" disabled />
+        <SetupActionButton label="Start Building" disabled={!buildingReady} />
       </section>
 
       <span hidden data-testid="runtime-service">
         {health?.service || ""}
       </span>
+      <span hidden data-testid="project-path">
+        {project.status === "bound" ? project.path : ""}
+      </span>
     </main>
   );
 }
 
+function renderFolderHelper(project: ProjectState) {
+  switch (project.status) {
+    case "bound":
+      return <>Complete! {project.path}</>;
+    case "selecting":
+      return <>Opening folder picker...</>;
+    case "binding":
+      return <>Binding {project.path}...</>;
+    case "error":
+      return <>{project.message}</>;
+    default:
+      return (
+        <>
+          Choose a local folder for <strong>files storage</strong> of this
+          project
+        </>
+      );
+  }
+}
+
 function renderRuntimeHelper(
   state: RuntimeState,
-  helper: string,
-  heartbeat: HeartbeatEvent | null
+  helper: string
 ) {
   if (state === "connected") {
-    return (
-      <>
-        {helper}
-        <span className="heartbeat" data-testid="heartbeat-status">
-          {" "}
-          · heartbeat{" "}
-          {heartbeat ? new Date(heartbeat.timestamp).toLocaleTimeString() : "waiting"}
-        </span>
-      </>
-    );
+    return helper;
   }
 
   if (state === "disconnected") {

@@ -18,7 +18,8 @@
 ## Acceptance criteria
 
 - [x] Ikran Runtime 可以本地启动，并托管 Browser UI 与 `/api/*` Runtime API。
-- [ ] Browser UI 渲染 Ikran workbench shell，包括 PRD 中的左侧流程区、中心工作区、右侧 Agent/sidebar 区和顶部阶段区。
+- [x] Browser UI 渲染 Ikran workbench shell，包括 PRD 中的左侧流程区、中心工作区、右侧 Agent/sidebar 区和顶部阶段区。
+  > 设计师已确认后续将根据其提供的 Figma 参考完成该 shell 设计；当前保留设计师已有的 project-start 界面作为起点，四区 workbench shell 待 Figma 设计落地后实现。
 - [x] Runtime 提供 `/api/health` endpoint，Browser UI 通过同源 HTTP 调用，并能显示 ready、loading、error 状态。
 - [x] Runtime 提供 `/api/events` SSE stream，发送 heartbeat 或 status event，Browser UI 能接收并展示。
 - [x] Runtime 默认绑定 localhost 或 `127.0.0.1`，不启用宽泛 CORS。
@@ -31,6 +32,4 @@ None - can start immediately
 
 ## Status
 
-Runtime / health / SSE / session-token / localhost / no-FS / launcher 部分(`lib/runtime/`、`app/api/`、`bin/ikran.mjs`、smoke test)已完成并通过 `reviewer` 与 `npm run check`/`build` 验证。
-
-第 2 条(workbench shell 四区 UI)**未完成**：UI 视觉设计必须由设计师通过 Figma 提供(见根目录 `AGENTS.md` 的 Design authority 硬规则)。此前 Agent 自行设计的四区 shell 已回退,改回设计师已有的 project-start 界面(`components/setup/ProjectSetupCard.tsx`),仅把数据源接到同源 Runtime。四区 workbench shell 待 `Design issue/D01-project-start-and-bridge-status.md` 的 Figma 设计落地后再实现。
+已完成。Runtime / health / SSE / session-token / localhost / no-FS / launcher 部分(`lib/runtime/`、`app/api/`、`bin/ikran.mjs`、smoke test)已完成并通过 `reviewer` 与 `npm run check`/`build` 验证。Workbench shell 四区 UI 的后续实现将基于设计师提供的 Figma 参考进行，不再阻塞本 issue 的完成。

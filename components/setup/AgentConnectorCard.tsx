@@ -7,7 +7,17 @@ import { activeIconGradients } from "./IconGradients";
 import { IconBox } from "./IconBox";
 import { useSquircle } from "./useSquircle";
 
-export function AgentConnectorCard({ active = false }: { active?: boolean }) {
+export type AgentId = "codex" | "cursor" | "claude";
+
+export function AgentConnectorCard({
+  active = false,
+  selectedAgent,
+  onSelectAgent
+}: {
+  active?: boolean;
+  selectedAgent?: AgentId | null;
+  onSelectAgent?: (agent: AgentId) => void;
+}) {
   const rowRef = useSquircle<HTMLDivElement>(16);
 
   return (
@@ -20,18 +30,41 @@ export function AgentConnectorCard({ active = false }: { active?: boolean }) {
               size={14}
               weight="fill"
             />
-          </IconBox>
+            </IconBox>
           <div className="step-fill">
             <p className="step-label">Connect Your Agent</p>
-            <span className="number">3</span>
+            <span className={`number ${active ? "number--purple" : ""}`}>3</span>
           </div>
         </div>
         <div className="agent-options" aria-label="Agent choices">
-          <AgentChoice iconSrc="/icons/codex.svg" iconClassName="agent-icon--codex">
+          <AgentChoice
+            active={active}
+            agent="codex"
+            iconSrc="/icons/codex.svg"
+            iconClassName="agent-icon--codex"
+            selected={selectedAgent === "codex"}
+            onSelect={onSelectAgent}
+          >
             Codex
           </AgentChoice>
-          <AgentChoice iconSrc="/icons/cursor.svg">Cursor</AgentChoice>
-          <AgentChoice iconSrc="/icons/claude.svg">Claude Code</AgentChoice>
+          <AgentChoice
+            active={active}
+            agent="cursor"
+            iconSrc="/icons/cursor.svg"
+            selected={selectedAgent === "cursor"}
+            onSelect={onSelectAgent}
+          >
+            Cursor
+          </AgentChoice>
+          <AgentChoice
+            active={active}
+            agent="claude"
+            iconSrc="/icons/claude.svg"
+            selected={selectedAgent === "claude"}
+            onSelect={onSelectAgent}
+          >
+            Claude Code
+          </AgentChoice>
         </div>
       </div>
       <p className="helper">
@@ -42,16 +75,30 @@ export function AgentConnectorCard({ active = false }: { active?: boolean }) {
 }
 
 function AgentChoice({
+  active,
+  agent,
   children,
   iconSrc,
-  iconClassName = ""
+  iconClassName = "",
+  selected = false,
+  onSelect
 }: {
+  active: boolean;
+  agent: AgentId;
   children: ReactNode;
   iconSrc: string;
   iconClassName?: string;
+  selected?: boolean;
+  onSelect?: (agent: AgentId) => void;
 }) {
   return (
-    <button className="agent-option" disabled type="button">
+    <button
+      className={`agent-option ${active ? "agent-option--active" : ""} ${selected ? "agent-option--selected" : ""}`}
+      aria-pressed={selected || undefined}
+      disabled={!active}
+      onClick={() => onSelect?.(agent)}
+      type="button"
+    >
       <AgentIcon src={iconSrc} className={iconClassName} />
       <span>{children}</span>
     </button>

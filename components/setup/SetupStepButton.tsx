@@ -16,6 +16,8 @@ export function SetupStepButton({
   labelComplete = false,
   helperTone = "default",
   helperTestId,
+  rowTestId,
+  onClick,
   disabled = false
 }: {
   icon: ReactNode;
@@ -27,29 +29,51 @@ export function SetupStepButton({
   labelComplete?: boolean;
   helperTone?: HelperTone;
   helperTestId?: string;
+  rowTestId?: string;
+  onClick?: () => void;
   disabled?: boolean;
 }) {
   const rowRef = useSquircle<HTMLDivElement>(12);
+  const buttonRowRef = useSquircle<HTMLButtonElement>(12);
+
+  const rowContent = (
+    <>
+      {icon}
+      <div className="step-fill">
+        <p className={`step-label ${labelComplete ? "complete" : ""}`}>
+          {label}
+        </p>
+        {stepNumber !== undefined && (
+          <span
+            className={`number ${stepNumberActive ? "active" : ""} ${
+              stepNumberTone === "blue" ? "number--blue" : ""
+            }`}
+          >
+            {stepNumber}
+          </span>
+        )}
+      </div>
+    </>
+  );
 
   return (
     <div className="step" aria-disabled={disabled || undefined}>
-      <div className="step-row" ref={rowRef}>
-        {icon}
-        <div className="step-fill">
-          <p className={`step-label ${labelComplete ? "complete" : ""}`}>
-            {label}
-          </p>
-          {stepNumber !== undefined && (
-            <span
-              className={`number ${stepNumberActive ? "active" : ""} ${
-                stepNumberTone === "blue" ? "number--blue" : ""
-              }`}
-            >
-              {stepNumber}
-            </span>
-          )}
+      {onClick ? (
+        <button
+          className="step-row step-row-button"
+          data-testid={rowTestId}
+          disabled={disabled}
+          onClick={onClick}
+          ref={buttonRowRef}
+          type="button"
+        >
+          {rowContent}
+        </button>
+      ) : (
+        <div className="step-row" ref={rowRef}>
+          {rowContent}
         </div>
-      </div>
+      )}
       <p
         className={`helper ${helperTone === "default" ? "" : helperTone}`}
         data-testid={helperTestId}

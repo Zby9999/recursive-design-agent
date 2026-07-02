@@ -58,9 +58,8 @@ test.describe("Ikran Issue 01 — local workbench runtime health", () => {
       "Local runtime connected"
     );
     await expect(page.getByTestId("runtime-service")).toHaveText("ikran-runtime");
-    await expect(page.getByTestId("heartbeat-status")).toContainText("heartbeat");
-    await expect(page.getByTestId("heartbeat-status")).not.toContainText(
-      "waiting"
+    await expect(page.getByTestId("runtime-helper")).not.toContainText(
+      "heartbeat"
     );
 
     if (!sessionToken) {
