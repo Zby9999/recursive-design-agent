@@ -1,4 +1,4 @@
-# MAP MVP PRD
+# Ikran MVP PRD
 
 Status: ready-for-agent
 Target: one-month usable research prototype
@@ -8,7 +8,7 @@ Date: 2026-06-29
 
 Designers using agentic design workflows can already ask coding agents to produce prototypes, but the interaction is still too language-only and too detached from the design surface. When an agent does not understand a Figma seed page, the designer must infer what the agent is confused about from a chat thread. This makes design-intent alignment slow, hard to audit, and hard to turn into a durable design system.
 
-The existing Recursive Design Method already defines the right workflow: start from a Figma seed page, align intent, extract a bidirectionally readable design system, reconstruct the seed as an interactive prototype to validate code/visual/semantic consistency, then use the resulting design system to create new prototypes and recursively update rules. What is missing is a usable Web App that makes this workflow visible, spatial, and suitable for research data collection.
+The existing Recursive Design Method already defines the right workflow: start from a Figma seed page, align intent, extract a bidirectionally readable design system, reconstruct the seed as an interactive prototype to validate code/visual/semantic consistency, then use the resulting design system to create new prototypes and recursively update rules. What is missing is a usable local-first workbench that makes this workflow visible, spatial, and suitable for research data collection.
 
 The MVP must become a full-loop research prototype within one month. It must support:
 
@@ -23,9 +23,11 @@ The product must not become a full online IDE, a Figma replacement, or a generic
 
 ## Solution
 
-Build MAP as a Next.js Web App plus a Local Bridge. The Web App keeps the designer inside one visual workspace. The Local Bridge connects the Web App to external coding agents such as Codex, Claude Code, or Cursor through a headless CLI adapter.
+Build Ikran as a local-first workbench that is launched through npm/npx and viewed in the user's browser. The Ikran Runtime is the local application process: it serves the Browser UI, exposes same-origin runtime APIs, owns local filesystem access, runs external coding agents such as Codex, Claude Code, or Cursor through a headless CLI adapter, and manages live prototype previews.
 
-The Web App presents:
+The product should feel like Storybook, Vite, or JupyterLab: the user starts a local tool, the tool opens a browser tab, and the browser becomes the interaction surface for a local workspace. Ikran should not be a cloud Web App that reaches into a separate local companion daemon for MVP.
+
+The Browser UI presents:
 
 - a tldraw-powered infinite canvas,
 - a Figma seed screenshot or prototype preview as a visual working surface,
@@ -36,10 +38,11 @@ The Web App presents:
 - live iframe preview for prototypes,
 - and minimal research export.
 
-The Local Bridge manages:
+The Ikran Runtime manages:
 
 - the user-selected local project folder,
-- project-local `.map/` metadata,
+- project-local `.ikran/` metadata,
+- native system folder selection,
 - SQLite state,
 - JSONL event logs,
 - Agent process execution,
@@ -59,17 +62,17 @@ The External Agent manages:
 - rule-update proposal generation,
 - and design-system-view JSON generation.
 
-Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should require that the selected external Agent environment already has working Figma MCP access. This preserves performance and avoids building an inferior local Figma integration without Figma's remote MCP advantages.
+Figma MCP is intentionally not embedded into the Ikran Runtime. The Runtime should require that the selected external Agent environment already has working Figma MCP access. This preserves performance and avoids building an inferior local Figma integration without Figma's remote MCP advantages.
 
 ## User Stories
 
-1. As a designer, I want to start a MAP project from a Figma seed page, so that my design language can be extracted from the source I already use.
+1. As a designer, I want to start an Ikran project from a Figma seed page, so that my design language can be extracted from the source I already use.
 2. As a designer, I want to select an empty local project folder, so that the agent can create the design-system files and prototype code from the seed page.
 3. As a designer, I want the app to guide me through seed extraction, so that I do not need to understand the underlying Recursive Design Method file structure.
 4. As a designer, I want the agent to read Figma visual and structured evidence, so that questions are grounded in real layout, component, typography, and style data.
 5. As a designer, I want the agent to create annotations on the design surface, so that I can see exactly where the agent is uncertain or making assumptions.
 6. As a designer, I want the agent, rather than me, to be the primary annotation initiator, so that the agent exposes its understanding state instead of making me manually label everything.
-7. As a designer, I want to answer agent questions from inside the Web App, so that I do not need to leave the visual workspace and talk to a coding agent in another window.
+7. As a designer, I want to answer agent questions from inside the Browser UI, so that I do not need to leave the visual workspace and talk to a coding agent in another window.
 8. As a designer, I want the active question to pan or zoom the canvas to the relevant evidence anchor, so that I can answer with the visual context in view.
 9. As a designer, I want every question card to include an agent observation, an agent question, and my answer, so that the alignment record is easy to understand later.
 10. As a designer, I want a question card to support multi-turn clarification, so that unclear answers can become a final designer answer.
@@ -99,7 +102,7 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 34. As a designer, I want an update proposal to show what will change, why, and affected items, so that I can make a fast decision.
 35. As a designer, I want Confirm and Cancel actions for rule updates, so that no design-system change is applied silently.
 36. As a designer, I want the generated design system to remain readable as Markdown and JSON, so that humans and agents can both work with it.
-37. As a designer, I want the Web App to read a generated design-system-view JSON file, so that the UI is stable and does not depend on parsing Markdown tables.
+37. As a designer, I want the Browser UI to read a generated design-system-view JSON file, so that the UI is stable and does not depend on parsing Markdown tables.
 38. As a designer, I want the source-of-truth design-system files to stay in the local project folder, so that the project is portable and auditable.
 39. As a designer, I want the app to create prototypes in my selected local project folder, so that prototypes are real code rather than temporary UI artifacts.
 40. As a designer, I want the agent to initialize a project when the folder is empty, so that I do not need to prepare a codebase first.
@@ -108,7 +111,7 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 43. As a designer, I want token.json to drive Tailwind config generation, so that design tokens and implementation stay aligned.
 44. As a designer, I want the agent to reconstruct the original seed page as a live prototype, so that code, visual output, and semantic design-system rules can be checked together.
 45. As a designer, I want the prototype to be shown as a live iframe preview, so that I can see changes continuously instead of relying on screenshots.
-46. As a designer, I want the preview to stay synchronized as the agent modifies code, so that the Web App feels like a live design workspace.
+46. As a designer, I want the preview to stay synchronized as the agent modifies code, so that the Browser UI feels like a live design workspace.
 47. As a designer, I want a focus mode to open the local preview directly, so that I can experience interactions in the real prototype.
 48. As a designer, I want the app to use live preview rather than screenshot history during design work, so that interaction remains central.
 49. As a designer, I want to create new prototypes from human intent after the initial design system exists, so that the system can test whether extracted design language is reusable.
@@ -125,23 +128,29 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 60. As a researcher, I want a JSON/JSONL export package, so that experiment data can be analyzed outside the app.
 61. As a researcher, I want workflow files, evidence registry, prototype source, and event logs to live together in the project folder, so that a study case can be reproduced.
 62. As a researcher, I want the app to support a single project and single flow in MVP, so that the experiment stays controlled.
-63. As an implementer, I want the Web App to communicate only with the Local Bridge, so that browser code never directly reads or writes local files.
-64. As an implementer, I want the Local Bridge to expose HTTP APIs and Server-Sent Events, so that Web App interactions and long-running Agent tasks can be tracked reliably.
-65. As an implementer, I want a unified AgentAdapter interface, so that Codex, Claude Code, Cursor, SDK adapters, or future ACP adapters can be swapped without rewriting the Web App.
+63. As an implementer, I want the Browser UI to communicate only with the Ikran Runtime, so that browser code never directly reads or writes local files.
+64. As an implementer, I want the Ikran Runtime to expose HTTP APIs and Server-Sent Events, so that Browser UI interactions and long-running Agent tasks can be tracked reliably.
+65. As an implementer, I want a unified AgentAdapter interface, so that Codex, Claude Code, Cursor, SDK adapters, or future ACP adapters can be swapped without rewriting the Browser UI.
 66. As an implementer, I want the first adapter to use headless CLI execution, so that MVP can reuse existing agent tools quickly.
-67. As an implementer, I want the Bridge to validate all agent JSON outputs, so that invalid structures do not break the UI.
-68. As an implementer, I want the Bridge to ask the agent to repair invalid output at most once, so that data quality improves without hiding errors.
-69. As an implementer, I want the Bridge not to invent semantic content when agent output is invalid, so that research data remains honest.
-70. As an implementer, I want project-local `.map/` metadata, so that app state, events, and exports travel with the study project.
+67. As an implementer, I want the Runtime to validate all agent JSON outputs, so that invalid structures do not break the UI.
+68. As an implementer, I want the Runtime to ask the agent to repair invalid output at most once, so that data quality improves without hiding errors.
+69. As an implementer, I want the Runtime not to invent semantic content when agent output is invalid, so that research data remains honest.
+70. As an implementer, I want project-local `.ikran/` metadata, so that app state, events, and exports travel with the study project.
 71. As an implementer, I want SQLite for state/indexing and JSONL for export, so that the app is reliable while research data remains portable.
-72. As an implementer, I want the Bridge to manage dev server lifecycle, so that agents do not become fragile process supervisors.
-73. As an implementer, I want the agent to own design reasoning and prototype creation, so that the Bridge stays deterministic.
+72. As an implementer, I want the Runtime to manage dev server lifecycle, so that agents do not become fragile process supervisors.
+73. As an implementer, I want the agent to own design reasoning and prototype creation, so that the Runtime stays deterministic.
 74. As an implementer, I want Figma MCP access to stay inside the external agent environment, so that the MVP can rely on user-configured Figma Remote MCP performance.
-75. As an implementer, I want future ACP compatibility to be preserved through adapter boundaries, so that the local bridge can mature without a rewrite.
+75. As an implementer, I want future ACP compatibility to be preserved through adapter boundaries, so that the Ikran Runtime can mature without a rewrite.
+76. As a designer, I want to launch Ikran through npm/npx, so that I can use it as a local workbench without installing a cloud-connected desktop product first.
+77. As a designer, I want Ikran to open in my browser automatically after launch, so that the local Runtime feels like one coherent app rather than two separate services.
+78. As a designer, I want to choose a project folder through the native operating-system folder picker, so that folder selection feels trustworthy and familiar.
+79. As an implementer, I want the Browser UI to communicate with the Runtime through same-origin APIs, so that Ikran avoids CORS, companion-daemon discovery, and cloud-to-local trust problems.
+80. As an implementer, I want the Runtime to bind only to localhost and protect sessions with a launch-scoped token, so that local filesystem and command execution capabilities are not exposed to arbitrary web pages.
+81. As a product owner, I want the same Runtime and Browser UI to be packageable as a future desktop app, so that Ikran can later move from npm/npx launch to a more polished native distribution without rewriting core workflow logic.
 
 ## Implementation Decisions
 
-- The MVP product codename is MAP.
+- The product name is Ikran.
 - The MVP must be a complete full-loop research prototype within one month, not a partial seed-extraction-only tool.
 - The MVP is single-project and single-flow. It does not support multiple projects, collaboration, or branching.
 - The workflow has two lifecycle phases:
@@ -161,28 +170,43 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 - The core user is a designer; the UI should not expose unnecessary engineering state.
 - Implementation will use concrete Figma page designs provided later by the user. Codex will own code and technical implementation.
 
-### Web App
+### Product Shape And Launch
 
-- Use Next.js for the Web App.
+- Ikran is a local-first workbench, not a cloud Web App plus a local companion Runtime.
+- MVP launch should be npm/npx based, for example `npx ikran`.
+- Launch starts one local Ikran Runtime process and opens a browser tab to the local UI.
+- The Ikran Runtime serves both the Browser UI and the Runtime API from the same local origin.
+- The Browser UI communicates with the Runtime through same-origin `/api/*` endpoints and an SSE event stream.
+- The Runtime should bind to `127.0.0.1` by default.
+- The Runtime should not enable broad CORS in MVP.
+- The Runtime should generate a launch-scoped local session token so arbitrary web pages cannot call privileged local APIs.
+- The same Runtime and Browser UI should remain packageable into a future Tauri or Electron desktop app.
+- Desktop packaging is a future distribution layer, not a reason to rewrite MVP workflow logic.
+
+### Browser UI
+
+- Use Next.js for the Browser UI.
 - Use tldraw as the infinite canvas foundation.
 - The UI follows the user's Figma interaction sketch:
   - top area for stage tabs,
   - left area for project flow and question list,
   - center area for design/prototype canvas,
   - right area for answering the selected question or using the Agent sidebar.
-- The Web App never directly reads or writes local project files.
-- The Web App communicates with the Local Bridge over localhost HTTP APIs and an SSE event stream.
-- The Web App embeds prototype previews through iframe live preview.
-- The Web App does not store prototype code.
-- The Web App does not run an internal model or build its own agent runtime.
+- The Browser UI never directly reads or writes local project files.
+- The Browser UI communicates with the Ikran Runtime through same-origin HTTP APIs and an SSE event stream.
+- The Browser UI embeds prototype previews through iframe live preview.
+- The Browser UI does not store prototype code.
+- The Browser UI does not run an internal model or build its own agent runtime.
 
-### Local Bridge
+### Ikran Runtime
 
-- Use a Local Bridge process between the Web App and external agents.
-- The Local Bridge exposes HTTP APIs for commands and SSE for task progress.
-- The Local Bridge owns:
+- Use one local Ikran Runtime process to serve the Browser UI, expose Runtime APIs, and coordinate external agents.
+- The Ikran Runtime exposes same-origin HTTP APIs for commands and SSE for task progress.
+- The Ikran Runtime owns:
+  - Browser UI serving,
   - project folder selection and validation,
-  - project-local `.map/` metadata,
+  - project-local `.ikran/` metadata,
+  - native system folder selection,
   - SQLite state,
   - event logging,
   - research export,
@@ -191,11 +215,21 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
   - dev server lifecycle,
   - preview URL/proxy,
   - and deterministic task state.
-- The Local Bridge does not embed or implement Figma MCP.
-- The Local Bridge should require the chosen external Agent environment to have working Figma MCP access.
-- The Local Bridge does not invent semantic content when the Agent output is malformed.
-- The Local Bridge validates agent output and may request one repair pass.
+- The Ikran Runtime does not embed or implement Figma MCP.
+- The Ikran Runtime should require the chosen external Agent environment to have working Figma MCP access.
+- The Ikran Runtime does not invent semantic content when the Agent output is malformed.
+- The Ikran Runtime validates agent output and may request one repair pass.
 - If repaired output is still invalid, the user must retry or switch agent.
+
+### Local Security Model
+
+- Ikran is local-first and should not upload project files to a cloud service in MVP.
+- The Runtime should listen on `127.0.0.1` and avoid external network binding by default.
+- Privileged APIs must require the launch-scoped local session token.
+- Runtime APIs should only operate inside the selected project folder unless a later explicit user action expands scope.
+- The Browser UI must not directly access the local filesystem.
+- Agent execution, file changes, project initialization, and rule-update application must be triggered by explicit user actions or approved workflow steps.
+- The Runtime should prefer fail-closed behavior when origin, session, or project-scope checks fail.
 
 ### External Agent
 
@@ -219,19 +253,22 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 ### Project Folder
 
 - The designer provides an empty local folder.
+- Folder selection should use the native operating-system folder picker where available.
+- The Browser UI triggers folder selection through a Runtime API; the Runtime owns the native dialog and returns the selected path.
+- If a native dialog is unavailable on a platform, MVP may fall back to a manually entered local path with validation.
 - The folder is expected to contain no source code at project start.
 - The Agent initializes the prototype app and workflow files inside that folder.
 - The folder becomes the complete project workspace and research case.
 - The project structure should include:
-  - project-local `.map/` metadata,
+  - project-local `.ikran/` metadata,
   - `workflow/design-system/`,
   - `workflow/design-evidence/`,
   - prototype source code,
   - package manifest,
   - Tailwind config,
   - and generated artifacts.
-- The Local Bridge stores runtime and research metadata under `.map/`.
-- Suggested `.map/` contents:
+- The Ikran Runtime stores runtime and research metadata under `.ikran/`.
+- Suggested `.ikran/` contents:
   - SQLite app database,
   - JSONL events,
   - config,
@@ -258,10 +295,10 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 ### Preview Runtime
 
 - MVP preview runtime is iframe embedding of a local dev server.
-- The Local Bridge starts or detects the dev server and exposes a stable preview URL.
+- The Ikran Runtime starts or detects the dev server and exposes a stable preview URL.
 - Prototype browsing should use live preview, not screenshot history.
 - The iframe preview should update as the Agent modifies the local project.
-- The Web App should provide a focus mode that opens the local preview URL for full interaction.
+- The Browser UI should provide a focus mode that opens the local preview URL for full interaction.
 - Sandpack is reserved for future component-library previews.
 - WebContainers are reserved for a future online unified platform.
 
@@ -316,7 +353,7 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
   - `workflow/design-system/design-system-view.json`.
 - `design-system-view.json` is generated by the Agent from source design-system files.
 - `design-system-view.json` is not a source of truth and should not be directly edited.
-- The Web App should read `design-system-view.json` for stable Design System page rendering.
+- The Browser UI should read `design-system-view.json` for stable Design System page rendering.
 - Natural-language files remain necessary because they preserve semantic intent, boundaries, and evidence interpretation.
 - Structured JSON remains necessary because it stabilizes generated UI rendering.
 - This dual-layer strategy keeps the design system both human-readable and UI-renderable.
@@ -368,7 +405,7 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
   - affected items,
   - Confirm,
   - Cancel.
-- Confirmed changes are applied through the Agent under Bridge orchestration.
+- Confirmed changes are applied through the Agent under Runtime orchestration.
 - Canceled changes do not modify source-of-truth files.
 
 ### New Prototype Creation
@@ -429,7 +466,7 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 
 ### Research Export
 
-- Provide a minimal research export package in `.map/export/`.
+- Provide a minimal research export package in `.ikran/export/`.
 - Export JSON/JSONL, not a visual analytics dashboard.
 - Suggested export files:
   - `events.jsonl`,
@@ -443,7 +480,7 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 
 ### Agent Task Contracts
 
-- Define stable task/result contracts between Web App, Local Bridge, and Agent.
+- Define stable task/result contracts between Browser UI, Ikran Runtime, and Agent.
 - MVP task families:
   - Project setup task,
   - Generate seed alignment questions task,
@@ -458,11 +495,11 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
   - invalid-output event,
   - one repair request,
   - repaired-output event if successful.
-- The Bridge should not silently truncate, invent, or reinterpret design semantics.
+- The Runtime should not silently truncate, invent, or reinterpret design semantics.
 
 ## Testing Decisions
 
-- The highest-value test seam is the full workflow boundary: Web App -> Local Bridge -> mocked AgentAdapter -> project artifacts -> Web App render.
+- The highest-value test seam is the full workflow boundary: Browser UI -> Ikran Runtime -> mocked AgentAdapter -> project artifacts -> Browser UI render.
 - Prefer a single high-level integration seam over many low-level tests because the MVP risk is workflow coordination, not isolated helper functions.
 - Tests should verify external behavior and durable outputs, not implementation details.
 - Since the target folder currently contains research and method files rather than application code, new test seams will need to be introduced with the product implementation.
@@ -470,19 +507,19 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 ### Primary Test Seam
 
 - Use a mocked AgentAdapter that returns deterministic evidence, question cards, design-system files, preview status, prototype run metadata, and rule-update proposals.
-- Run the Web App against a local Bridge test instance.
+- Run the Browser UI against a local Ikran Runtime test instance serving the UI and APIs from the same origin.
 - Use a temporary empty project folder.
 - Verify that the app can complete the research workflow without a real Agent or real Figma MCP.
 
 ### Modules To Test
 
-- Web App seed extraction flow:
+- Browser UI seed extraction flow:
   - stage tabs render,
   - question cards render,
   - all cards require final answers,
   - selected questions focus the evidence anchor,
   - completion gate only opens after all cards are answered.
-- Local Bridge API:
+- Ikran Runtime API:
   - project folder validation,
   - task creation,
   - SSE events,
@@ -494,7 +531,7 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
   - headless CLI adapter can be substituted with mock adapter,
   - task/result schemas remain stable.
 - Project artifact generation:
-  - `.map/` metadata is created,
+  - `.ikran/` metadata is created,
   - `workflow/design-system/` is created,
   - `workflow/design-evidence/registry.md` is created,
   - `design-system-view.json` is created and renderable.
@@ -529,12 +566,13 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 - Multi-project workspace management.
 - Multi-user collaboration.
 - Cloud-hosted runner.
+- Cloud Web App plus local companion Runtime architecture.
 - Full ACP implementation.
 - Full WebContainers runtime.
 - Sandpack component-library preview.
 - Browser-based IDE or code editor.
-- Direct Web App access to the local filesystem.
-- Local Bridge implementation of Figma MCP.
+- Direct Browser UI access to the local filesystem.
+- Ikran Runtime implementation of Figma MCP.
 - Replacing external coding agents with an in-app model runtime.
 - Complex Design System manual editor.
 - Standalone Rules page.
@@ -545,21 +583,25 @@ Figma MCP is intentionally not embedded into the Local Bridge. The Bridge should
 - Full deterministic token-to-Tailwind generator script.
 - General-purpose app generation outside the Recursive Design Method workflow.
 - Production-grade packaging, installers, team auth, or billing.
+- Production-grade desktop app packaging.
 
 ## Further Notes
 
-- The folder currently has no git repository and no issue tracker configuration, so this PRD is recorded as a project document rather than published to an issue tracker.
-- If an issue tracker is later added, this PRD should be filed with the `ready-for-agent` label.
+- This PRD is recorded as the product source of truth before related issue files are updated.
+- After the Ikran architecture is approved, related issue files should be revised to match the local workbench Runtime model.
 - One-month MVP pacing should prioritize the complete research loop over polish.
 
 ### Suggested One-Month Milestones
 
 1. Week 1: Project foundation
-   - Next.js Web App shell.
-   - Local Bridge shell.
-   - HTTP + SSE communication.
+   - npm/npx launch path.
+   - local Ikran Runtime shell.
+   - Runtime-served Next.js Browser UI shell.
+   - same-origin HTTP + SSE communication.
+   - localhost session token.
    - project folder selection flow.
-   - `.map/` metadata creation.
+   - native folder picker spike or platform-specific MVP implementation.
+   - `.ikran/` metadata creation.
    - SQLite/event log foundation.
    - mocked AgentAdapter.
    - base task/result schemas.

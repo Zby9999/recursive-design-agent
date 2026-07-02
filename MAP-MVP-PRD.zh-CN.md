@@ -1,4 +1,4 @@
-# MAP MVP PRD（中文）
+# Ikran MVP PRD（中文）
 
 状态：ready-for-agent
 目标：一个月内可用的研究原型
@@ -8,7 +8,7 @@
 
 使用 agentic 设计工作流的设计师已经可以让编码 Agent 产出原型，但交互仍然过于依赖语言，也过于脱离设计画布。当 Agent 不理解一个 Figma 种子页面时，设计师必须从聊天线程中推断 Agent 到底困惑在哪里。这会让设计意图对齐变慢、难以审计，也难以沉淀成持久的设计系统。
 
-现有的 Recursive Design Method 已经定义了正确的工作流：从 Figma 种子页面开始，对齐意图，提取一个设计师和 Agent 都能双向阅读的设计系统，将种子重建为交互式原型以验证代码、视觉和语义的一致性，然后使用生成的设计系统创建新原型，并递归更新规则。现在缺少的是一个可用的 Web App，让这套工作流变得可见、空间化，并适合收集研究数据。
+现有的 Recursive Design Method 已经定义了正确的工作流：从 Figma 种子页面开始，对齐意图，提取一个设计师和 Agent 都能双向阅读的设计系统，将种子重建为交互式原型以验证代码、视觉和语义的一致性，然后使用生成的设计系统创建新原型，并递归更新规则。现在缺少的是一个本地优先的可用工作台，让这套工作流变得可见、空间化，并适合收集研究数据。
 
 MVP 必须在一个月内成为完整闭环的研究原型。它必须支持：
 
@@ -23,9 +23,11 @@ MVP 必须在一个月内成为完整闭环的研究原型。它必须支持：
 
 ## 解决方案
 
-将 MAP 构建为一个 Next.js Web App 加一个本地桥接器。Web App 让设计师始终处在同一个可视化工作空间中。本地桥接器通过 headless CLI 适配器，把 Web App 连接到 Codex、Claude Code 或 Cursor 等外部编码 Agent。
+将 Ikran 构建为一个本地优先的工作台，通过 npm/npx 启动，并在用户自己的浏览器中交互。Ikran Runtime 是本地应用进程：它负责托管浏览器 UI、暴露同源 Runtime API、拥有本地文件系统访问能力、通过 headless CLI 适配器运行 Codex、Claude Code 或 Cursor 等外部编码 Agent，并管理实时原型预览。
 
-Web App 提供：
+产品形态应接近 Storybook、Vite 或 JupyterLab：用户启动一个本地工具，工具打开浏览器标签页，浏览器成为本地工作空间的交互界面。MVP 中，Ikran 不应是一个云端 Web App 再连接独立的本地 companion daemon。
+
+浏览器 UI 提供：
 
 - 由 tldraw 驱动的无限画布，
 - 作为视觉工作面的 Figma 种子截图或原型预览，
@@ -36,10 +38,11 @@ Web App 提供：
 - 原型的实时 iframe 预览，
 - 以及最小化的研究导出。
 
-本地桥接器负责：
+Ikran Runtime 负责：
 
 - 用户选择的本地项目文件夹，
-- 项目本地 `.map/` 元数据，
+- 项目本地 `.ikran/` 元数据，
+- 系统原生文件夹选择器，
 - SQLite 状态，
 - JSONL 事件日志，
 - Agent 进程执行，
@@ -59,17 +62,17 @@ Web App 提供：
 - 生成规则更新提案，
 - 以及生成设计系统视图 JSON。
 
-Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 Agent 环境已经具备可用的 Figma MCP 访问能力。这样可以保持性能，并避免在没有 Figma 远程 MCP 优势的情况下构建一个较弱的本地 Figma 集成。
+Figma MCP 有意不嵌入 Ikran Runtime。Runtime 应要求被选中的外部 Agent 环境已经具备可用的 Figma MCP 访问能力。这样可以保持性能，并避免在没有 Figma 远程 MCP 优势的情况下构建一个较弱的本地 Figma 集成。
 
 ## 用户故事
 
-1. 作为设计师，我想从一个 Figma 种子页面开始 MAP 项目，以便从我已经使用的源文件中提取设计语言。
+1. 作为设计师，我想从一个 Figma 种子页面开始 Ikran 项目，以便从我已经使用的源文件中提取设计语言。
 2. 作为设计师，我想选择一个空的本地项目文件夹，以便 Agent 可以从种子页面创建设计系统文件和原型代码。
 3. 作为设计师，我想让 App 引导我完成种子提取，以便我不需要理解底层 Recursive Design Method 文件结构。
 4. 作为设计师，我想让 Agent 读取 Figma 的视觉证据和结构化证据，以便问题建立在真实的布局、组件、排版和样式数据之上。
 5. 作为设计师，我想让 Agent 在设计画布上创建标注，以便我能准确看到 Agent 哪里不确定或正在做假设。
 6. 作为设计师，我想让 Agent 而不是我成为主要的标注发起者，以便 Agent 暴露自己的理解状态，而不是让我手动标注所有内容。
-7. 作为设计师，我想在 Web App 内回答 Agent 的问题，以便我不需要离开视觉工作空间去另一个窗口和编码 Agent 对话。
+7. 作为设计师，我想在浏览器 UI 内回答 Agent 的问题，以便我不需要离开视觉工作空间去另一个窗口和编码 Agent 对话。
 8. 作为设计师，我想让当前问题将画布平移或缩放到相关证据锚点，以便我可以在视觉上下文中回答。
 9. 作为设计师，我想让每张问题卡都包含 Agent 观察、Agent 问题和我的回答，以便后续容易理解对齐记录。
 10. 作为设计师，我想让问题卡支持多轮澄清，以便不清晰的回答可以变成最终设计师回答。
@@ -99,7 +102,7 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 34. 作为设计师，我想让更新提案展示将改变什么、为什么改变以及受影响项，以便我可以快速决策。
 35. 作为设计师，我想要规则更新的 Confirm 和 Cancel 操作，以便没有设计系统变更会被静默应用。
 36. 作为设计师，我想让生成的设计系统保持为可阅读的 Markdown 和 JSON，以便人和 Agent 都能使用。
-37. 作为设计师，我想让 Web App 读取生成的 design-system-view JSON 文件，以便 UI 稳定，而不依赖解析 Markdown 表格。
+37. 作为设计师，我想让浏览器 UI 读取生成的 design-system-view JSON 文件，以便 UI 稳定，而不依赖解析 Markdown 表格。
 38. 作为设计师，我想让作为事实源的设计系统文件保留在本地项目文件夹中，以便项目可移植且可审计。
 39. 作为设计师，我想让 App 在我选择的本地项目文件夹中创建原型，以便原型是真实代码，而不是临时 UI artifact。
 40. 作为设计师，我想让 Agent 在文件夹为空时初始化项目，以便我不需要先准备代码库。
@@ -108,7 +111,7 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 43. 作为设计师，我想让 token.json 驱动 Tailwind 配置生成，以便设计 token 和实现保持对齐。
 44. 作为设计师，我想让 Agent 将原始种子页面重建为实时原型，以便代码、视觉输出和语义设计系统规则可以一起检查。
 45. 作为设计师，我想让原型以实时 iframe 预览展示，以便我可以持续看到变化，而不是依赖截图。
-46. 作为设计师，我想让 Agent 修改代码时预览保持同步，以便 Web App 感觉像一个实时设计工作空间。
+46. 作为设计师，我想让 Agent 修改代码时预览保持同步，以便浏览器 UI 感觉像一个实时设计工作空间。
 47. 作为设计师，我想要一种 focus mode 直接打开本地预览，以便我可以在真实原型中体验交互。
 48. 作为设计师，我想让 App 在设计工作中使用实时预览，而不是截图历史，以便交互保持核心地位。
 49. 作为设计师，我想在初始设计系统存在后，从人的意图创建新原型，以便系统可以测试提取出的设计语言是否可复用。
@@ -125,23 +128,29 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 60. 作为研究者，我想要 JSON/JSONL 导出包，以便实验数据可以在 App 外分析。
 61. 作为研究者，我想让工作流文件、证据注册表、原型源代码和事件日志共同存在于项目文件夹中，以便研究案例可复现。
 62. 作为研究者，我想让 App 在 MVP 中支持单项目、单流程，以便实验保持受控。
-63. 作为实现者，我想让 Web App 只与本地桥接器通信，以便浏览器代码永远不会直接读取或写入本地文件。
-64. 作为实现者，我想让本地桥接器暴露 HTTP API 和 Server-Sent Events，以便可靠追踪 Web App 交互和长时间运行的 Agent 任务。
-65. 作为实现者，我想要统一的 AgentAdapter 接口，以便 Codex、Claude Code、Cursor、SDK adapter 或未来 ACP adapter 可以替换，而无需重写 Web App。
+63. 作为实现者，我想让浏览器 UI 只与 Ikran Runtime 通信，以便浏览器代码永远不会直接读取或写入本地文件。
+64. 作为实现者，我想让 Ikran Runtime 暴露 HTTP API 和 Server-Sent Events，以便可靠追踪浏览器 UI 交互和长时间运行的 Agent 任务。
+65. 作为实现者，我想要统一的 AgentAdapter 接口，以便 Codex、Claude Code、Cursor、SDK adapter 或未来 ACP adapter 可以替换，而无需重写浏览器 UI。
 66. 作为实现者，我想让第一个 adapter 使用 headless CLI 执行，以便 MVP 可以快速复用现有 Agent 工具。
-67. 作为实现者，我想让桥接器校验所有 Agent JSON 输出，以便无效结构不会破坏 UI。
-68. 作为实现者，我想让桥接器最多要求 Agent 修复一次无效输出，以便提高数据质量而不隐藏错误。
-69. 作为实现者，我不想让桥接器在 Agent 输出无效时发明语义内容，以便研究数据保持诚实。
-70. 作为实现者，我想要项目本地 `.map/` 元数据，以便 App 状态、事件和导出随研究项目一起移动。
+67. 作为实现者，我想让 Runtime 校验所有 Agent JSON 输出，以便无效结构不会破坏 UI。
+68. 作为实现者，我想让 Runtime 最多要求 Agent 修复一次无效输出，以便提高数据质量而不隐藏错误。
+69. 作为实现者，我不想让 Runtime 在 Agent 输出无效时发明语义内容，以便研究数据保持诚实。
+70. 作为实现者，我想要项目本地 `.ikran/` 元数据，以便 App 状态、事件和导出随研究项目一起移动。
 71. 作为实现者，我想使用 SQLite 存储状态/索引，使用 JSONL 进行导出，以便 App 可靠，同时研究数据保持可移植。
-72. 作为实现者，我想让桥接器管理开发服务器生命周期，以便 Agent 不会变成脆弱的进程监督器。
-73. 作为实现者，我想让 Agent 负责设计推理和原型创建，以便桥接器保持确定性。
+72. 作为实现者，我想让 Runtime 管理开发服务器生命周期，以便 Agent 不会变成脆弱的进程监督器。
+73. 作为实现者，我想让 Agent 负责设计推理和原型创建，以便 Runtime 保持确定性。
 74. 作为实现者，我想让 Figma MCP 访问保留在外部 Agent 环境内，以便 MVP 可以依赖用户配置的 Figma Remote MCP 性能。
-75. 作为实现者，我想通过 adapter 边界保留未来 ACP 兼容性，以便本地桥接器可以成熟演进而不需要重写。
+75. 作为实现者，我想通过 adapter 边界保留未来 ACP 兼容性，以便 Ikran Runtime 可以成熟演进而不需要重写。
+76. 作为设计师，我想通过 npm/npx 启动 Ikran，以便无需先安装云端连接型桌面产品，也能把它作为本地工作台使用。
+77. 作为设计师，我想让 Ikran 启动后自动打开浏览器，以便本地 Runtime 感觉像一个完整应用，而不是两个割裂的服务。
+78. 作为设计师，我想通过操作系统原生文件夹选择器选择项目文件夹，以便文件夹选择可信且符合系统习惯。
+79. 作为实现者，我想让浏览器 UI 通过同源 API 与 Runtime 通信，以便 Ikran 避免 CORS、companion daemon 发现和云到本地信任问题。
+80. 作为实现者，我想让 Runtime 只绑定 localhost，并用启动时生成的 session token 保护会话，以便本地文件系统和命令执行能力不会暴露给任意网页。
+81. 作为产品负责人，我想让同一套 Runtime 和浏览器 UI 未来可以被包装为桌面应用，以便 Ikran 后续能从 npm/npx 启动过渡到更完整的原生分发，而无需重写核心工作流。
 
 ## 实现决策
 
-- MVP 产品代号是 MAP。
+- 产品正式名称是 Ikran。
 - MVP 必须在一个月内成为完整闭环的研究原型，而不是只覆盖种子提取的局部工具。
 - MVP 是单项目、单流程。它不支持多项目、协作或分支。
 - 工作流有两个生命周期阶段：
@@ -161,28 +170,43 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 - 核心用户是设计师；UI 不应暴露不必要的工程状态。
 - 实现会使用用户后续提供的具体 Figma 页面设计。Codex 将负责代码和技术实现。
 
-### Web App
+### 产品形态与启动方式
 
-- 使用 Next.js 构建 Web App。
+- Ikran 是本地优先工作台，不是云端 Web App 加本地 companion Runtime。
+- MVP 应通过 npm/npx 启动，例如 `npx ikran`。
+- 启动时运行一个本地 Ikran Runtime 进程，并打开浏览器标签页进入本地 UI。
+- Ikran Runtime 从同一个本地 origin 托管浏览器 UI 和 Runtime API。
+- 浏览器 UI 通过同源 `/api/*` endpoint 和 SSE 事件流与 Runtime 通信。
+- Runtime 默认绑定 `127.0.0.1`。
+- MVP 中 Runtime 不应开启宽泛 CORS。
+- Runtime 应生成启动级本地 session token，避免任意网页调用有权限的本地 API。
+- 同一套 Runtime 和浏览器 UI 应保持未来可包装为 Tauri 或 Electron 桌面应用。
+- 桌面化是未来分发层，不应导致 MVP 核心工作流重写。
+
+### 浏览器 UI
+
+- 使用 Next.js 构建浏览器 UI。
 - 使用 tldraw 作为无限画布基础。
 - UI 遵循用户的 Figma 交互草图：
   - 顶部区域用于阶段标签页，
   - 左侧区域用于项目流程和问题列表，
   - 中央区域用于设计/原型画布，
   - 右侧区域用于回答选中的问题或使用 Agent 侧栏。
-- Web App 永远不直接读取或写入本地项目文件。
-- Web App 通过 localhost HTTP API 和 SSE 事件流与本地桥接器通信。
-- Web App 通过 iframe 实时预览嵌入原型。
-- Web App 不存储原型代码。
-- Web App 不运行内部模型，也不构建自己的 Agent runtime。
+- 浏览器 UI 永远不直接读取或写入本地项目文件。
+- 浏览器 UI 通过同源 HTTP API 和 SSE 事件流与 Ikran Runtime 通信。
+- 浏览器 UI 通过 iframe 实时预览嵌入原型。
+- 浏览器 UI 不存储原型代码。
+- 浏览器 UI 不运行内部模型，也不构建自己的 Agent runtime。
 
-### 本地桥接器
+### Ikran Runtime
 
-- 在 Web App 和外部 Agent 之间使用本地桥接器进程。
-- 本地桥接器暴露 HTTP API 用于命令，暴露 SSE 用于任务进度。
-- 本地桥接器负责：
+- 使用一个本地 Ikran Runtime 进程来托管浏览器 UI、暴露 Runtime API，并协调外部 Agent。
+- Ikran Runtime 暴露同源 HTTP API 用于命令，暴露 SSE 用于任务进度。
+- Ikran Runtime 负责：
+  - 浏览器 UI 托管，
   - 项目文件夹选择和校验，
-  - 项目本地 `.map/` 元数据，
+  - 项目本地 `.ikran/` 元数据，
+  - 系统原生文件夹选择器，
   - SQLite 状态，
   - 事件日志，
   - 研究导出，
@@ -191,11 +215,21 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
   - 开发服务器生命周期，
   - 预览 URL/代理，
   - 以及确定性的任务状态。
-- 本地桥接器不嵌入或实现 Figma MCP。
-- 本地桥接器应要求所选外部 Agent 环境具备可用的 Figma MCP 访问能力。
-- 当 Agent 输出格式错误时，本地桥接器不发明语义内容。
-- 本地桥接器校验 Agent 输出，并可请求一次修复。
+- Ikran Runtime 不嵌入或实现 Figma MCP。
+- Ikran Runtime 应要求所选外部 Agent 环境具备可用的 Figma MCP 访问能力。
+- 当 Agent 输出格式错误时，Ikran Runtime 不发明语义内容。
+- Ikran Runtime 校验 Agent 输出，并可请求一次修复。
 - 如果修复后的输出仍然无效，用户必须重试或切换 Agent。
+
+### 本地安全模型
+
+- Ikran 是本地优先产品，MVP 中不应把项目文件上传到云服务。
+- Runtime 默认监听 `127.0.0.1`，不应绑定外部网络地址。
+- 有权限的 API 必须要求启动级本地 session token。
+- Runtime API 默认只能在用户选择的项目文件夹内操作，除非后续通过明确用户动作扩展范围。
+- 浏览器 UI 不得直接访问本地文件系统。
+- Agent 执行、文件修改、项目初始化和规则更新应用，必须由明确用户动作或已批准的工作流步骤触发。
+- 当 origin、session 或项目范围校验失败时，Runtime 应偏向 fail-closed。
 
 ### 外部 Agent
 
@@ -219,19 +253,22 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 ### 项目文件夹
 
 - 设计师提供一个空的本地文件夹。
+- 文件夹选择应尽量使用操作系统原生文件夹选择器。
+- 浏览器 UI 通过 Runtime API 触发文件夹选择；Runtime 拥有原生 dialog，并返回被选中的真实路径。
+- 如果某个平台暂时无法使用原生 dialog，MVP 可以退回到手动输入本地路径并进行校验。
 - 项目开始时，该文件夹预计不包含源代码。
 - Agent 在该文件夹中初始化原型 App 和工作流文件。
 - 该文件夹成为完整的项目工作空间和研究案例。
 - 项目结构应包括：
-  - 项目本地 `.map/` 元数据，
+  - 项目本地 `.ikran/` 元数据，
   - `workflow/design-system/`，
   - `workflow/design-evidence/`，
   - 原型源代码，
   - package manifest，
   - Tailwind 配置，
   - 以及生成的 artifacts。
-- 本地桥接器将 runtime 和研究元数据存储在 `.map/` 下。
-- 建议的 `.map/` 内容：
+- Ikran Runtime 将 runtime 和研究元数据存储在 `.ikran/` 下。
+- 建议的 `.ikran/` 内容：
   - SQLite App 数据库，
   - JSONL events，
   - config，
@@ -258,10 +295,10 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 ### 预览 Runtime
 
 - MVP 预览 runtime 是对本地开发服务器的 iframe 嵌入。
-- 本地桥接器启动或检测开发服务器，并暴露稳定的预览 URL。
+- Ikran Runtime 启动或检测开发服务器，并暴露稳定的预览 URL。
 - 原型浏览应使用实时预览，而不是截图历史。
 - 当 Agent 修改本地项目时，iframe 预览应更新。
-- Web App 应提供 focus mode，用于打开本地预览 URL 以进行完整交互。
+- 浏览器 UI 应提供 focus mode，用于打开本地预览 URL 以进行完整交互。
 - Sandpack 保留给未来的组件库预览。
 - WebContainers 保留给未来的在线统一平台。
 
@@ -316,7 +353,7 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
   - `workflow/design-system/design-system-view.json`。
 - `design-system-view.json` 由 Agent 根据源设计系统文件生成。
 - `design-system-view.json` 不是事实源，不应被直接编辑。
-- Web App 应读取 `design-system-view.json`，用于稳定渲染设计系统页面。
+- 浏览器 UI 应读取 `design-system-view.json`，用于稳定渲染设计系统页面。
 - 自然语言文件仍然必要，因为它们保留语义意图、边界和证据解释。
 - 结构化 JSON 仍然必要，因为它稳定了生成式 UI 渲染。
 - 这种双层策略让设计系统既能被人阅读，也能被 UI 渲染。
@@ -368,7 +405,7 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
   - 受影响项，
   - Confirm，
   - Cancel。
-- 已确认的变更通过 Agent 在桥接器编排下应用。
+- 已确认的变更通过 Agent 在 Runtime 编排下应用。
 - 已取消的变更不会修改事实源文件。
 
 ### 新原型创建
@@ -429,7 +466,7 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 
 ### 研究导出
 
-- 在 `.map/export/` 中提供最小研究导出包。
+- 在 `.ikran/export/` 中提供最小研究导出包。
 - 导出 JSON/JSONL，而不是可视化分析 dashboard。
 - 建议导出文件：
   - `events.jsonl`，
@@ -443,7 +480,7 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 
 ### Agent 任务契约
 
-- 定义 Web App、本地桥接器和 Agent 之间稳定的任务/结果契约。
+- 定义浏览器 UI、Ikran Runtime 和 Agent 之间稳定的任务/结果契约。
 - MVP 任务族：
   - Project setup task，
   - Generate seed alignment questions task，
@@ -458,11 +495,11 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
   - invalid-output event，
   - 一次修复请求，
   - 如果成功，则触发 repaired-output event。
-- 桥接器不应静默截断、发明或重新解释设计语义。
+- Runtime 不应静默截断、发明或重新解释设计语义。
 
 ## 测试决策
 
-- 最高价值的测试边界是完整工作流边界：Web App -> 本地桥接器 -> mocked AgentAdapter -> 项目 artifacts -> Web App render。
+- 最高价值的测试边界是完整工作流边界：浏览器 UI -> Ikran Runtime -> mocked AgentAdapter -> 项目 artifacts -> 浏览器 UI render。
 - 偏好一个高层集成边界，而不是许多低层测试，因为 MVP 风险在于工作流协调，而不是孤立 helper function。
 - 测试应验证外部行为和持久输出，而不是实现细节。
 - 由于目标文件夹当前包含研究和方法文件，而不是应用代码，新的测试边界需要随着产品实现引入。
@@ -470,19 +507,19 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 ### 主要测试边界
 
 - 使用 mocked AgentAdapter，返回确定性的证据、问题卡、设计系统文件、预览状态、原型运行元数据和规则更新提案。
-- 让 Web App 连接本地 Bridge 测试实例运行。
+- 让浏览器 UI 连接由同一个本地 Ikran Runtime 托管的测试实例运行。
 - 使用一个临时空项目文件夹。
 - 验证 App 可以在没有真实 Agent 或真实 Figma MCP 的情况下完成研究工作流。
 
 ### 待测试模块
 
-- Web App 种子提取流程：
+- 浏览器 UI 种子提取流程：
   - 阶段标签页渲染，
   - 问题卡渲染，
   - 所有卡片要求最终回答，
   - 选中的问题聚焦证据锚点，
   - 完成门禁只在所有卡片回答后打开。
-- 本地桥接器 API：
+- Ikran Runtime API：
   - 项目文件夹校验，
   - 任务创建，
   - SSE events，
@@ -494,7 +531,7 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
   - headless CLI adapter 可被 mock adapter 替代，
   - 任务/结果 schema 保持稳定。
 - 项目 artifact 生成：
-  - `.map/` 元数据被创建，
+  - `.ikran/` 元数据被创建，
   - `workflow/design-system/` 被创建，
   - `workflow/design-evidence/registry.md` 被创建，
   - `design-system-view.json` 被创建且可渲染。
@@ -529,12 +566,13 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 - 多项目工作空间管理。
 - 多用户协作。
 - 云托管 runner。
+- 云端 Web App 加本地 companion Runtime 的产品形态。
 - 完整 ACP 实现。
 - 完整 WebContainers runtime。
 - Sandpack 组件库预览。
 - 浏览器内 IDE 或代码编辑器。
-- Web App 直接访问本地文件系统。
-- 本地桥接器实现 Figma MCP。
+- 浏览器 UI 直接访问本地文件系统。
+- Ikran Runtime 实现 Figma MCP。
 - 用 App 内模型 runtime 替换外部编码 Agent。
 - 复杂设计系统手动编辑器。
 - 独立 Rules 页面。
@@ -545,21 +583,25 @@ Figma MCP 有意不嵌入本地桥接器。桥接器应要求被选中的外部 
 - 完整确定性 token-to-Tailwind 生成脚本。
 - Recursive Design Method 工作流以外的通用 App 生成。
 - 生产级 packaging、installer、团队 auth 或 billing。
+- 生产级桌面应用打包。
 
 ## 进一步说明
 
-- 该文件夹当前没有 git 仓库，也没有 issue tracker 配置，因此本 PRD 作为项目文档记录，而不是发布到 issue tracker。
-- 如果之后添加 issue tracker，应以 `ready-for-agent` 标签归档此 PRD。
+- 本 PRD 先作为产品事实源记录；相关 issue 文件会在 Ikran 架构对齐后再修改。
+- 与用户确认 Ikran 本地工作台架构后，应更新相关 issue，使它们与本地 Runtime 模型一致。
 - 一个月 MVP 节奏应优先完成完整研究循环，而不是打磨。
 
 ### 建议的一个月里程碑
 
 1. 第 1 周：项目基础
-   - Next.js Web App shell。
-   - 本地桥接器 shell。
-   - HTTP + SSE 通信。
+   - npm/npx 启动路径。
+   - 本地 Ikran Runtime shell。
+   - 由 Runtime 托管的 Next.js 浏览器 UI shell。
+   - 同源 HTTP + SSE 通信。
+   - localhost session token。
    - 项目文件夹选择流程。
-   - `.map/` 元数据创建。
+   - 原生文件夹选择器 spike 或平台级 MVP 实现。
+   - `.ikran/` 元数据创建。
    - SQLite/事件日志基础。
    - mocked AgentAdapter。
    - 基础任务/结果 schema。
