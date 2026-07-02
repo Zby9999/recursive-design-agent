@@ -1,11 +1,12 @@
-# Keep this repository scoped to attempt artifacts and workflow modules.
-*
-
-!/.gitignore
-!/Attempts/
-!/Attempts/**
-!/workflow/
-!/workflow/**
-
+node_modules
+.next
+.playwright-mcp
+playwright-report
+test-results
+*.tsbuildinfo
+.env*.local
 .DS_Store
 **/.DS_Store
+Research
+recursive-design-method
+/*.png

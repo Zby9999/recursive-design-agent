@@ -1,0 +1,29 @@
+{
+  "name": "recursive-design-agent",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k -n bridge,web -c magenta,cyan \"npm run dev:bridge\" \"npm run dev:web\"",
+    "dev:web": "next dev -p 3000",
+    "dev:bridge": "node bridge/server.mjs",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm run test:e2e"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
+    "figma-squircle": "^1.1.0",
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^26.1.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "concurrently": "^10.0.3",
+    "typescript": "^6.0.3"
+  }
+}
