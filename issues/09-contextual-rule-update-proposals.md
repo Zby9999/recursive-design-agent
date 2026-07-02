@@ -20,7 +20,7 @@
 ## Acceptance criteria
 
 - [ ] 设计师可以从 Design System browser 页面提交 contextual feedback。
-- [ ] Bridge 通过 AgentAdapter 边界将 feedback 路由到 rule-update task。
+- [ ] Ikran Runtime 通过 AgentAdapter 边界将 feedback 路由到 rule-update task。
 - [ ] mocked adapter 返回 Update Proposal，展示 what will change、why、affected items。
 - [ ] Confirm 通过 agent path 应用 proposed source-of-truth artifact changes，并按需刷新 view JSON 或页面状态。
 - [ ] Cancel 不修改 source-of-truth design-system files。

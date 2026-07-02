@@ -2,7 +2,7 @@
 
 ## What to build
 
-在初始 design system 存在后，加入可选 visual-reference 输入路径。设计师可以提供一个 visual reference 和 intent，Bridge 发送给 agent，生成的新 prototype 默认仍受当前 design system 约束，除非 task 明确记录 local exception 或 open gap。
+在初始 design system 存在后，加入可选 visual-reference 输入路径。设计师可以提供一个 visual reference 和 intent，Ikran Runtime 发送给 agent，生成的新 prototype 默认仍受当前 design system 约束，除非 task 明确记录 local exception 或 open gap。
 
 ## User stories covered
 

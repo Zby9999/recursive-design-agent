@@ -18,8 +18,8 @@
 ## Acceptance criteria
 
 - [ ] 使用真实 Figma seed page 验证 visual evidence 和 structured evidence 能产生 anchored question cards。
-- [ ] 使用已配置的 external agent environment 提供 Figma MCP access；Local Bridge 不实现 Figma MCP。
-- [ ] 至少一个真实 headless CLI adapter path 通过 Bridge task lifecycle 被 smoke-tested。
+- [ ] 使用已配置的 external agent environment 提供 Figma MCP access；Ikran Runtime 不实现 Figma MCP。
+- [ ] 至少一个真实 headless CLI adapter path 通过 Ikran Runtime task lifecycle 被 smoke-tested。
 - [ ] 使用真实空 project folder 验证 Next.js、TypeScript、Tailwind CSS、npm 的 prototype initialization。
 - [ ] 手动验证 iframe 和 focus mode 中的 live preview。
 - [ ] visual and interaction acceptance notes 记录 seed reconstruction 是否能作为可用 live prototype 被检查。

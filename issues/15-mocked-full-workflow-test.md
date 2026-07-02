@@ -2,7 +2,7 @@
 
 ## What to build
 
-创建 PRD 中最高价值的测试边界：Web App -> Local Bridge -> mocked AgentAdapter -> project artifacts -> Web App render。该测试应证明完整 MAP research loop 可以在没有真实 Figma MCP 和真实外部 agent 的情况下跑通。
+创建 PRD 中最高价值的测试边界：Browser UI -> Ikran Runtime -> mocked AgentAdapter -> project artifacts -> Browser UI render。该测试应证明完整 Ikran research loop 可以在没有真实 Figma MCP 和真实外部 agent 的情况下跑通。
 
 ## User stories covered
 
@@ -23,7 +23,7 @@
 
 - [ ] 测试使用临时空 project folder。
 - [ ] 测试完成 project binding、mocked seed evidence、alignment questions、designer answers、draft design-system artifacts、view JSON rendering、seed preview readiness、rule-update proposal path、new prototype run 和 research export。
-- [ ] 测试验证 `.map/`、`workflow/design-system/`、`workflow/design-evidence/` 下的 durable artifacts。
+- [ ] 测试验证 `.ikran/`、`workflow/design-system/`、`workflow/design-evidence/` 下的 durable artifacts。
 - [ ] 测试验证 exported JSON/JSONL 包含 linked project、question、answer、prototype 和 rule-update identifiers。
 - [ ] 测试验证 research event model 不需要记录低层 UI 噪声。
 - [ ] 测试保持 deterministic，不依赖真实 Agent、真实 Figma MCP 或本地进程之外的网络访问。

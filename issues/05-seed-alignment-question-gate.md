@@ -21,7 +21,7 @@
 
 ## Acceptance criteria
 
-- [ ] Web App 渲染五个 seed alignment stages：Layout、Component Extraction、Interaction Style、Visual Style、Generalizability。
+- [ ] Browser UI 渲染五个 seed alignment stages：Layout、Component Extraction、Interaction Style、Visual Style、Generalizability。
 - [ ] 每个 stage 包含 2 到 5 张 mocked agent-generated question cards。
 - [ ] 每张 card 包含 agent observation、agent question、conversation thread 和 final designer answer field。
 - [ ] card state 只有 unanswered 或 answered；annotation type 不影响完成规则。
